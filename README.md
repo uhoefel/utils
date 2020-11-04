@@ -1,4 +1,4 @@
-# Jatex
+# Utils
 
 [![](https://img.shields.io/github/issues/uhoefel/utils?style=flat-square)](https://github.com/uhoefel/utils/issues)
 [![](https://img.shields.io/github/stars/uhoefel/utils?style=flat-square)](https://github.com/uhoefel/utils/stargazers)
@@ -7,6 +7,7 @@
 [![](https://img.shields.io/github/license/uhoefel/utils?style=flat-square)](https://choosealicense.com/licenses/mit/)
 
 Utils is a small Java module designed to provide a number of convenience methods for regular expressions, mathematical operations, operations on strings, etc.
+It aims at having as few dependencies as possible (especially since there are few modularized libraries are out there).
 
 Some examples:
 ```java

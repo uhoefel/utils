@@ -2,9 +2,6 @@ package eu.hoefel.utils;
 
 import java.lang.reflect.Array;
 
-import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.LUDecomposition;
-
 /**
  * Math related convenience methods.
  * 
@@ -14,7 +11,7 @@ public final class Maths {
 
 	/** Hiding any public constructor. */
 	private Maths() {
-	    throw new IllegalStateException("This is a pure utility class!");
+		throw new IllegalStateException("This is a pure utility class!");
 	}
 
 	/**
@@ -60,8 +57,8 @@ public final class Maths {
 
 	/** The Levi-Civita symbol for 3D. */
 	private static final int[][][] LEVI_CIVITA_3D = {{{0,0, 0}, { 0,0,1}, {0,-1,0}},
-													 {{0,0,-1}, { 0,0,0}, {1, 0,0}},
-													 {{0,1, 0}, {-1,0,0}, {0, 0,0}}};
+			{{0,0,-1}, { 0,0,0}, {1, 0,0}},
+			{{0,1, 0}, {-1,0,0}, {0, 0,0}}};
 
 	/**
 	 * Checks whether a string can be parsed to a float.
@@ -333,8 +330,8 @@ public final class Maths {
 	 */
 	public static final void swap(boolean[] a, int i, int j) {
 		boolean temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -348,8 +345,8 @@ public final class Maths {
 	 */
 	public static final void swap(byte[] a, int i, int j) {
 		byte temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -363,8 +360,8 @@ public final class Maths {
 	 */
 	public static final void swap(short[] a, int i, int j) {
 		short temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -378,8 +375,8 @@ public final class Maths {
 	 */
 	public static final void swap(int[] a, int i, int j) {
 		int temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -393,8 +390,8 @@ public final class Maths {
 	 */
 	public static final void swap(long[] a, int i, int j) {
 		long temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -408,8 +405,8 @@ public final class Maths {
 	 */
 	public static final void swap(float[] a, int i, int j) {
 		float temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -423,8 +420,8 @@ public final class Maths {
 	 */
 	public static final void swap(double[] a, int i, int j) {
 		double temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -438,8 +435,8 @@ public final class Maths {
 	 */
 	public static final void swap(char[] a, int i, int j) {
 		char temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -453,8 +450,8 @@ public final class Maths {
 	 */
 	public static final <T> void swap(T[] a, int i, int j) {
 		T temp = a[i];
-	    a[i] = a[j];
-	    a[j] = temp;
+		a[i] = a[j];
+		a[j] = temp;
 	}
 
 	/**
@@ -540,12 +537,31 @@ public final class Maths {
 	}
 
 	/**
-	 * Calculates the determinant of the given matrix.
+	 * Calculates the determinant of the given matrix. For up to 4D matrices the
+	 * determinant is hardcoded and thus very fast. Higher dimensions use LU
+	 * decomposition.
 	 * 
 	 * @param m the matrix. Needs to be a square matrix.
 	 * @return the determinant
 	 */
-	public static double determinant(double[][] m) {
+	public static final double determinant(double[][] m) {
+		return determinant(m, 1e-12);
+	}
+
+	/**
+	 * Calculates the determinant of the given matrix. For up to 4D matrices the
+	 * determinant is hardcoded and thus very fast. Higher dimensions use
+	 * <a href="https://doi.org/10.1090/S0025-5718-1974-0331751-8">LU
+	 * decomposition</a>.
+	 * 
+	 * @param m         the matrix. Needs to be a square matrix.
+	 * @param threshold the threshold that determines if a matrix is effectively
+	 *                  singular. Only relevant for matrices with a dimension &gt;4,
+	 *                  in which case this threshold is used for the LU
+	 *                  decomposition.
+	 * @return the determinant
+	 */
+	public static final double determinant(double[][] m, double threshold) {
 		if (m.length != m[0].length) {
 			throw new IllegalArgumentException("Determinant can only be calculates for square matrices! "
 					+ "The given matrix was of size (%d,%d).".formatted(m.length, m[0].length));
@@ -554,7 +570,8 @@ public final class Maths {
 		return switch (m.length) {
 			case 1 -> m[0][0];
 			case 2 -> m[0][0] * m[1][1] - m[0][1] * m[1][0];
-			case 3 -> m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) - m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
+			case 3 -> m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) 
+					- m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
 					+ m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
 			case 4 -> m[0][3] * m[1][2] * m[2][1] * m[3][0] - m[0][2] * m[1][3] * m[2][1] * m[3][0]
 					- m[0][3] * m[1][1] * m[2][2] * m[3][0] + m[0][1] * m[1][3] * m[2][2] * m[3][0]
@@ -568,8 +585,133 @@ public final class Maths {
 					- m[0][2] * m[1][1] * m[2][0] * m[3][3] + m[0][1] * m[1][2] * m[2][0] * m[3][3]
 					+ m[0][2] * m[1][0] * m[2][1] * m[3][3] - m[0][0] * m[1][2] * m[2][1] * m[3][3]
 					- m[0][1] * m[1][0] * m[2][2] * m[3][3] + m[0][0] * m[1][1] * m[2][2] * m[3][3];
-			default -> new LUDecomposition(new BlockRealMatrix(m)).getDeterminant();
+			default -> luDecomposition(m, 1e-12).determinant();
 		};
+	}
+
+	/**
+	 * Helper record for passing around information stemming from a LU
+	 * decomposition.
+	 * 
+	 * @param lu         the LU decomposition, i.e., the matrix contains both the L
+	 *                   (without the ones along the diagonal) and the U components
+	 * @param isSingular true if the LU decomposition is singular. This might be a
+	 *                   "real" singularity, or an "effective" singularity.
+	 * @param isEven     true if an even number of permutations occurred. Required
+	 *                   e.g. for the calculation of the determinant
+	 * 
+	 * @author Udo Hoefel
+	 * @see <a href="https://doi.org/10.1090/S0025-5718-1974-0331751-8">LU decomposition</a>
+	 */
+	private record LuDecomposition(double[][] lu, boolean isSingular, boolean isEven) {
+
+		/**
+		 * Gets the determinant.
+		 * 
+		 * @return the determinant, or 0 if the LU decomposition is effectively singular
+		 */
+		public double determinant() {
+			if (isSingular) return 0;
+			double det = 1;
+			for (int i = 0; i < lu.length; i++) {
+				det *= lu[i][i];
+			}
+			if (isEven) return det;
+			return -det;
+		}
+	}
+
+	/**
+	 * Placeholder for LU decompositions that yield effectively singular matrices.
+	 * Does not contain a meaningful LU matrix or isEven value.
+	 */
+	private static final LuDecomposition SINGULAR_VALUE_IN_LU_DECOMPOSITION = new LuDecomposition(new double[0][0], true, true);
+
+	/**
+	 * Calculates the LU decomposition.
+	 * 
+	 * @param matrix the matrix. Needs to be a square matrix.
+	 * @param threshold the threshold that determines if a matrix is effectively
+	 *                  singular
+	 * @return the LU decomposition. If the matrix is effectively singular,
+	 *         {@link #SINGULAR_VALUE_IN_LU_DECOMPOSITION} is returned, which does
+	 *         <em>not</em> contain a sensible LU decomposition - which should be
+	 *         fine, given that we only use {@link #luDecomposition} in
+	 *         {@link LuDecomposition#determinant()}, and singular matrices are filtered out directly there
+	 */
+	private static final LuDecomposition luDecomposition(double[][] matrix, double threshold) {
+		// this is (currently) only used within determinant(double[][]), so we already
+		// know that we have a square matrix -> we do not need to check again
+
+		// lu will hold both the L and the U matrix at the same time
+		double[][] lu = deepCopyPrimitiveArray(matrix);
+		int numPermutations = 0;
+
+		// we know that numRows == numColumns, but for the sake of clarity we define
+		// both numRows and numColumns. The compiler probably optimizes that away anyways.
+		int numRows = matrix.length;
+		int numColumns = numRows;
+		for (int column = 0; column < numColumns; column++) {
+			// upper triangular part (so the U part)
+			for (int row = 0; row < column; row++) {
+				updateLuEntry(lu, row, column, row);
+			}
+
+			// lower triangular (L) part (except the 1s on the diagonal).
+			int max = column;
+			double maxSum = Double.NEGATIVE_INFINITY;
+			for (int row = column; row < numRows; row++) {
+				updateLuEntry(lu, row, column, column);
+
+				// keep the info which of the row index that has the largest value in
+				// [row][column], such that we potentially can pivot later
+				double absSum = Math.abs(lu[row][column]);
+				if (absSum > maxSum) {
+					maxSum = absSum;
+					max = row;
+				}
+			}
+
+			if (Math.abs(lu[max][column]) < threshold) {
+				// nope, this is effectively singular, so we just return a placeholder with
+				// nonsensical values, except the isSingular value, which is sufficient for all
+				// cases where we treat singular matrices specially - and at least at the
+				// moment, we always treat singular matrices specially
+				return SINGULAR_VALUE_IN_LU_DECOMPOSITION;
+			}
+
+			// if this check yields true we should swap the max-index row with the
+			// column-index row
+			if (max != column) {
+				// the generic implementation of swap is quite useful here, as it avoids
+				// changing each value of the array rows and just exchanges the pointers, which
+				// is more performant
+				swap(lu, max, column);
+				numPermutations++;
+			}
+
+			// normalize the matrix entries below the diagonal element with respect to the
+			// diagonal element
+			for (int row = column + 1; row < numRows; row++) {
+				lu[row][column] /= lu[column][column];
+			}
+		}
+
+		return new LuDecomposition(lu, false, isEven(numPermutations));
+	}
+
+	/**
+	 * Updates the entry at the specified row and column in the LU matrix.
+	 * 
+	 * @param lu the LU matrix
+	 * @param row the row in which to update
+	 * @param column the column in which to update
+	 * @param upto only work on entries upto this value (exclusive)
+	 */
+	private static void updateLuEntry(double[][] lu, int row, int column, int upto) {
+		for (int i = 0; i < upto; i++) {
+			lu[row][column] -= lu[row][i] * lu[i][column];
+		}
 	}
 
 	/**
@@ -694,9 +836,9 @@ public final class Maths {
 			return new int[][] { { numbers[0], numbers[1] }, { numbers[1], numbers[0] } };
 		} else if (numbers.length == 3) {
 			return new int[][] {
-					{ numbers[0], numbers[1], numbers[2] }, { numbers[0], numbers[2], numbers[1] },
-					{ numbers[2], numbers[0], numbers[1] }, { numbers[2], numbers[1], numbers[0] },
-					{ numbers[1], numbers[2], numbers[0] }, { numbers[1], numbers[0], numbers[2] } };
+				{ numbers[0], numbers[1], numbers[2] }, { numbers[0], numbers[2], numbers[1] },
+				{ numbers[2], numbers[0], numbers[1] }, { numbers[2], numbers[1], numbers[0] },
+				{ numbers[1], numbers[2], numbers[0] }, { numbers[1], numbers[0], numbers[2] } };
 		}
 
 		int n = numbers.length;
@@ -708,7 +850,7 @@ public final class Maths {
 		int[][] ret = new int[(int) factorial][n];
 		ret[0] = numbers.clone();
 		int[] a = numbers.clone();
-		
+
 		int i = 0;
 		int index = 1;
 		while (i < n) {
