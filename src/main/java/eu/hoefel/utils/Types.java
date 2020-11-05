@@ -76,6 +76,8 @@ public final class Types {
 	/**
 	 * Box the object, if it is a primitive (array).
 	 * 
+	 * @param <T>    the type of the boxed object, so e.g. if object is of type
+	 *               int[], the returned object will be of type Integer[]
 	 * @param object the object to be boxed if it is a primitive (array)
 	 * @return the (boxed) object
 	 */
@@ -104,6 +106,8 @@ public final class Types {
 	 * Unbox the object if it is a primitive array. Unboxing single primitive values
 	 * does not work, because generics don't work with primitives.
 	 * 
+	 * @param <T>    the type of the unboxed object, so e.g. if object is of type
+	 *               Integer[], the returned object will be of type int[]
 	 * @param object the object that is unboxed if it is a primitive array
 	 * @return the (unboxed) object
 	 */

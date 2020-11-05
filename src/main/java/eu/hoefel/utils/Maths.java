@@ -442,6 +442,7 @@ public final class Maths {
 	/**
 	 * Swaps {@code i} and {@code j} in {@code a} (hence no return).
 	 * 
+	 * @param <T> any non-1D-primitive array
 	 * @param a the array in which to swap the indices
 	 * @param i the index of which the corresponding value is to be copied to index
 	 *          {@code j}
@@ -814,7 +815,7 @@ public final class Maths {
 	/**
 	 * Calculates all permutations of the given numbers. Do note that if duplicates
 	 * occur they are treated as if they were different numbers, i.e. uniqueness is
-	 * not checked. This will be slow for values > 9 as the number of permutations
+	 * not checked. This will be slow for values &gt;9 as the number of permutations
 	 * "explodes".
 	 * 
 	 * @param numbers the numbers to find the permutations of (typically, you will
@@ -873,9 +874,10 @@ public final class Maths {
 	/**
 	 * Calculates all permutations of the given objects. Do note that if duplicates
 	 * occur they are treated as if they were different objects, i.e. uniqueness is
-	 * not checked. This will be slow for values > 9 as the number of permutations
+	 * not checked. This will be slow for values &gt;9 as the number of permutations
 	 * "explodes".
 	 * 
+	 * @param <T> the object type
 	 * @param objects the objects to find the permutations of (typically, you will
 	 *                want to have each object occur only once to ensure that there
 	 *                are no "duplicate" permutations)
