@@ -9,4 +9,6 @@ module eu.hoefel.jatex {
 	exports eu.hoefel.utils;
 	
 	opens eu.hoefel.utils to org.junit.platform.commons;
+	
+	requires org.junit.jupiter.api;
 }
