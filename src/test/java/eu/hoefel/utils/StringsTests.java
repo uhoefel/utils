@@ -42,4 +42,23 @@ final class StringsTests {
 		assertEquals("Car", Strings.capitalize("Car"));
 		assertThrows(NullPointerException.class, () -> Strings.capitalize(null));
 	}
+
+	@DisplayName("Testing trimming")
+	@Test
+	void testTrimming() {
+		assertEquals("bla", Strings.trim("bla"));
+		assertEquals("bsbk32412f", Strings.trim("   bsbk32412f "));
+		assertEquals("2543754", Strings.trim(" 2543754 "));
+		assertEquals("gsdfg32765", Strings.trim("  gsdfg32765"));
+		assertEquals("131345fjkg", Strings.trim("131345fjkg "));
+		assertEquals("131345fjkg", Strings.trim("131345fjkg "));
+		assertEquals("131345fjkg", Strings.trim("131345fjkg "));
+		
+		assertEquals("131345fjkg", Strings.trim("131345fjkg " + Strings.NON_BREAKABLE_SPACE));
+		assertEquals("131345fjkg", Strings.trim("131345fjkg " + Strings.SMALL_NON_BREAKABLE_SPACE));
+		assertEquals("131345fjkg", Strings.trim("131345fjkg " + Strings.SMALL_NON_BREAKABLE_SPACE + Strings.NON_BREAKABLE_SPACE));
+		
+		String input = "131345fjkg " + Strings.SMALL_NON_BREAKABLE_SPACE;
+		assertEquals(input, input.trim());
+	}
 }

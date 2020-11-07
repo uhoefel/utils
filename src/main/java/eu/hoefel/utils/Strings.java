@@ -18,6 +18,15 @@ public final class Strings {
 	    throw new IllegalStateException("This is a pure utility class!");
 	}
 
+	/** Non-breakable space. This is removed via {@link String#trim()}. */
+	public static final String NON_BREAKABLE_SPACE = " ";
+
+	/**
+	 * Non-breakable small space. Be aware that this is <em>not</em> removed via
+	 * {@link String#trim()}.
+	 */
+	public static final String SMALL_NON_BREAKABLE_SPACE = " ";
+
 	/** Helper array to optimize {@link #ordinalNumeral(int)}. */
 	private static final String[] ORDINAL_NUMERAL = { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
 
@@ -53,5 +62,15 @@ public final class Strings {
 	 */
 	public static final Map<String, String> mapOf(String... strs) {
 		return Stream.of(strs).filter(Objects::nonNull).collect(Collectors.toMap(s -> s, s -> ""));
+	}
+
+	/**
+	 * Trims <em>all</em> surrounding space, including small non-breakable spaces.
+	 * 
+	 * @param s the string to trim
+	 * @return the trimmed space
+	 */
+	public static final String trim(String s) {
+		return Regexes.ALL_SURROUNDING_SPACE.matcher(s).replaceAll("");
 	}
 }
