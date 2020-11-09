@@ -1,6 +1,7 @@
 package eu.hoefel.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,15 +93,15 @@ public final class IOs {
 	 * @param resource the folder in which to look for the resource
 	 * @param fileName the resource to find
 	 * @param clazz    the class of which to get the resources
-	 * @return the input stream of the file
+	 * @return the content of the file
 	 */
 	private static final String getStringFromResourceLocation(String resource, String fileName, Class<?> clazz) {
-		// loading from within jar
+		// loading from within jar - not sure if this still works with modularization?
 		try (InputStream is = clazz.getResourceAsStream(resource + fileName)) {
 			if (is == null) {
 				// loading within editor (e.g. eclipse)
-				try (InputStream is2 = clazz.getClassLoader().getResourceAsStream(fileName)) {
-					if (is2 == null) throw new IllegalArgumentException("Found no file with that filename!");
+				String folder = new File(resource + clazz.getPackage().getName()).getAbsolutePath().replace(".", "/") + "/";
+				try (InputStream is2 = new FileInputStream(folder + fileName)) {
 					return readStream(is2, fileName);
 				}
 			}
@@ -113,7 +114,7 @@ public final class IOs {
 	/**
 	 * Reads the stream.
 	 * 
-	 * @param is       the inputstream
+	 * @param is       the input stream
 	 * @param fileName the filename
 	 * @return the string as read from the stream
 	 * @throws IOException if the filename is a zip-file and there is an issue with
