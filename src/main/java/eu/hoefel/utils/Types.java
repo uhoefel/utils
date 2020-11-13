@@ -230,6 +230,7 @@ public final class Types {
 	 * @return true if the given classes are compatible
 	 */
 	public static final boolean isCompatible(Class<?> clazz1, Class<?> clazz2) {
-		return (clazz1 == clazz2 || clazz1.isAssignableFrom(clazz2) || Types.boxedClass(clazz1).isAssignableFrom(clazz2));
+		return clazz1 == clazz2 || (clazz1 != null && clazz2 != null
+				&& (clazz1.isAssignableFrom(clazz2) || boxedClass(clazz1).isAssignableFrom(clazz2)));
 	}
 }
