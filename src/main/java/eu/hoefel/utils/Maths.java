@@ -279,10 +279,10 @@ public final class Maths {
 	}
 
 	/**
-	 * Calculates the inverse hyperbolic sine of {@code x}.
+	 * Calculates the area sine hyperbolicus of {@code x}.
 	 * 
 	 * @param x the argument
-	 * @return the inverse hyperbolic sine
+	 * @return the area sine hyperbolicus
 	 */
 	public static final double arsinh(double x) {
 		if (x < 0) return -arsinh(-x);
@@ -300,10 +300,10 @@ public final class Maths {
 	}
 
 	/**
-	 * Calculates the inverse cotangent of {@code x}.
+	 * Calculates the area cosine hyperbolicus of {@code x}.
 	 * 
 	 * @param x the argument
-	 * @return the inverse cotangent
+	 * @return the area cosine hyperbolicus
 	 */
 	public static final double arcosh(double x) {
 		// k is the number of significant decimal numbers, so for 64 bit double it is 16
@@ -317,6 +317,16 @@ public final class Maths {
 		} else {
 			return Math.log(x + Math.sqrt(x * x - 1));
 		}
+	}
+
+	/**
+	 * Calculates the inverse cotangent of {@code x}.
+	 * 
+	 * @param x the argument
+	 * @return the inverse cotangent
+	 */
+	public static final double acot(double x) {
+		return Math.atan2(1, x);
 	}
 
 	/**
@@ -569,24 +579,24 @@ public final class Maths {
 		}
 
 		return switch (m.length) {
-			case 1 -> m[0][0];
-			case 2 -> m[0][0] * m[1][1] - m[0][1] * m[1][0];
-			case 3 -> m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) 
-					- m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
-					+ m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
-			case 4 -> m[0][3] * m[1][2] * m[2][1] * m[3][0] - m[0][2] * m[1][3] * m[2][1] * m[3][0]
-					- m[0][3] * m[1][1] * m[2][2] * m[3][0] + m[0][1] * m[1][3] * m[2][2] * m[3][0]
-					+ m[0][2] * m[1][1] * m[2][3] * m[3][0] - m[0][1] * m[1][2] * m[2][3] * m[3][0]
-					- m[0][3] * m[1][2] * m[2][0] * m[3][1] + m[0][2] * m[1][3] * m[2][0] * m[3][1]
-					+ m[0][3] * m[1][0] * m[2][2] * m[3][1] - m[0][0] * m[1][3] * m[2][2] * m[3][1]
-					- m[0][2] * m[1][0] * m[2][3] * m[3][1] + m[0][0] * m[1][2] * m[2][3] * m[3][1]
-					+ m[0][3] * m[1][1] * m[2][0] * m[3][2] - m[0][1] * m[1][3] * m[2][0] * m[3][2]
-					- m[0][3] * m[1][0] * m[2][1] * m[3][2] + m[0][0] * m[1][3] * m[2][1] * m[3][2]
-					+ m[0][1] * m[1][0] * m[2][3] * m[3][2] - m[0][0] * m[1][1] * m[2][3] * m[3][2]
-					- m[0][2] * m[1][1] * m[2][0] * m[3][3] + m[0][1] * m[1][2] * m[2][0] * m[3][3]
-					+ m[0][2] * m[1][0] * m[2][1] * m[3][3] - m[0][0] * m[1][2] * m[2][1] * m[3][3]
-					- m[0][1] * m[1][0] * m[2][2] * m[3][3] + m[0][0] * m[1][1] * m[2][2] * m[3][3];
-			default -> luDecomposition(m, 1e-12).determinant();
+		case 1 -> m[0][0];
+		case 2 -> m[0][0] * m[1][1] - m[0][1] * m[1][0];
+		case 3 -> m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) 
+				- m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
+				+ m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
+		case 4 -> m[0][3] * m[1][2] * m[2][1] * m[3][0] - m[0][2] * m[1][3] * m[2][1] * m[3][0]
+				- m[0][3] * m[1][1] * m[2][2] * m[3][0] + m[0][1] * m[1][3] * m[2][2] * m[3][0]
+				+ m[0][2] * m[1][1] * m[2][3] * m[3][0] - m[0][1] * m[1][2] * m[2][3] * m[3][0]
+				- m[0][3] * m[1][2] * m[2][0] * m[3][1] + m[0][2] * m[1][3] * m[2][0] * m[3][1]
+				+ m[0][3] * m[1][0] * m[2][2] * m[3][1] - m[0][0] * m[1][3] * m[2][2] * m[3][1]
+				- m[0][2] * m[1][0] * m[2][3] * m[3][1] + m[0][0] * m[1][2] * m[2][3] * m[3][1]
+				+ m[0][3] * m[1][1] * m[2][0] * m[3][2] - m[0][1] * m[1][3] * m[2][0] * m[3][2]
+				- m[0][3] * m[1][0] * m[2][1] * m[3][2] + m[0][0] * m[1][3] * m[2][1] * m[3][2]
+				+ m[0][1] * m[1][0] * m[2][3] * m[3][2] - m[0][0] * m[1][1] * m[2][3] * m[3][2]
+				- m[0][2] * m[1][1] * m[2][0] * m[3][3] + m[0][1] * m[1][2] * m[2][0] * m[3][3]
+				+ m[0][2] * m[1][0] * m[2][1] * m[3][3] - m[0][0] * m[1][2] * m[2][1] * m[3][3]
+				- m[0][1] * m[1][0] * m[2][2] * m[3][3] + m[0][0] * m[1][1] * m[2][2] * m[3][3];
+		default -> luDecomposition(m, 1e-12).determinant();
 		};
 	}
 
@@ -802,8 +812,8 @@ public final class Maths {
 	 */
 	public static final long factorial(int n) {
 		if (n < 0) {
-			throw new UnsupportedOperationException("You requested the factorial of a negative number (%d). "
-					+ "This is not supported.".formatted(n));
+			throw new UnsupportedOperationException(
+					"You requested the factorial of a negative number (%d). This is not supported.".formatted(n));
 		} else if (n > 20) {
 			throw new IllegalArgumentException("You requested the factorial of %d, "
 					+ "which would yield a result too large to hold even in a long.".formatted(n));
