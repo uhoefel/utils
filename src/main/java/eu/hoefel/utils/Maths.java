@@ -295,7 +295,7 @@ public final class Maths {
 		} else if (x > k) {
 			return Math.log(2) + Math.log(x);
 		} else {
-			return Math.log(x + Math.sqrt(x * x - 1));
+			return Math.log(x + Math.sqrt(x * x + 1));
 		}
 	}
 
