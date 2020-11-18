@@ -1051,7 +1051,7 @@ public final class Maths {
 	 * @return the matrix with each column normalized separately
 	 */
 	public static final double[][] normalizeColumns(double[][] m) {
-		double[][] normed = Maths.deepCopyPrimitiveArray(m);
+		double[][] normed = deepCopyPrimitiveArray(m);
 		for (int i = 0; i < m.length; i++) {
 			double norm = 0;
 			for (int j = 0; j < m[i].length; j++) {
@@ -1075,7 +1075,7 @@ public final class Maths {
 	 * @return the matrix with each row normalized separately
 	 */
 	public static final double[][] normalizeRows(double[][] m) {
-		double[][] normed = Maths.deepCopyPrimitiveArray(m);
+		double[][] normed = deepCopyPrimitiveArray(m);
 		for (int i = 0; i < m[0].length; i++) {
 			double norm = 0;
 			for (int j = 0; j < m.length; j++) {
