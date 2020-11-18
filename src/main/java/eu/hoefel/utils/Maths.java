@@ -984,4 +984,108 @@ public final class Maths {
 			}
 		}
 	}
+
+	/**
+	 * Calculates the forward differences. The truncation error is on the order of
+	 * 𝒪(Δ<i>x</i>).
+	 * 
+	 * @param f0 the function value <i>f</i> at <i>x</i>
+	 * @param f1 the function value <i>f</i> at <i>x</i>+Δ<i>x</i>
+	 * @param dx the step size Δ<i>x</i> between <i>f</i><sub>0</sub> and
+	 *           <i>f</i><sub>1</sub>
+	 * @return the forward difference approximating the derivative
+	 *         ∂<sub><i>x</i></sub><i>f</i>
+	 */
+	public static final double[] forwardDifferences(double[] f0, double[] f1, double dx) {
+		double[] ret = new double[f0.length];
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = (f1[i] - f0[i]) / dx;
+		}
+		return ret;
+	}
+
+	/**
+	 * Calculates the central differences. The truncation error is on the order of
+	 * 𝒪(Δ<i>x</i><sup>2</sup>).
+	 * 
+	 * @param f0 the function value <i>f</i> at <i>x</i>-Δ<i>x</i>
+	 * @param f2 the function value <i>f</i> at <i>x</i>+Δ<i>x</i>
+	 * @param dx the step size Δ<i>x</i> between <i>f</i><sub>0</sub> and
+	 *           <i>f</i><sub>1</sub> (i.e., the distance between
+	 *           <i>f</i><sub>0</sub> and <i>f</i><sub>2</sub> is twice this value)
+	 * @return the central difference approximating the derivative
+	 *         ∂<sub><i>x</i></sub><i>f</i>
+	 */
+	public static final double[] centralDifferences(double[] f0, double[] f2, double dx) {
+		double[] ret = new double[f0.length];
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = (f2[i] - f0[i]) / (2 * dx);
+		}
+		return ret;
+	}
+
+	/**
+	 * Multiplies the matrix to left hand side of the column vector.
+	 * 
+	 * @param matrix the matrix with as many columns as the vector has rows
+	 * @param vector the column vector with as many rows as the matrix has columns
+	 * @return the product
+	 */
+	public static final double[] matrixVectorMul(double[][] matrix, double[] vector) {
+		double[] ret = new double[vector.length];
+		for (int row = 0; row < matrix.length; row++) {
+			for (int column = 0; column < matrix[row].length; column++) {
+				ret[row] += matrix[row][column] * vector[column];
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Normalizes each column in the matrix. Note that Java is considered to be
+	 * row-major, i.e., for example, in a
+	 * <code>double[][]<code> array of shape <code>[3][5]</code> you have 3 rows and
+	 * 5 columns.
+	 * 
+	 * @param m the matrix
+	 * @return the matrix with each column normalized separately
+	 */
+	public static final double[][] normalizeColumns(double[][] m) {
+		double[][] normed = Maths.deepCopyPrimitiveArray(m);
+		for (int i = 0; i < m.length; i++) {
+			double norm = 0;
+			for (int j = 0; j < m[i].length; j++) {
+				norm += Math.pow(m[i][j], 2);
+			}
+			norm = Math.sqrt(norm);
+			for (int j = 0; j < m[i].length; j++) {
+				normed[i][j] /= norm;
+			}
+		}
+		return normed;
+	}
+
+	/**
+	 * Normalizes each row in the matrix. Note that Java is considered to be
+	 * row-major, i.e., for example, in a
+	 * <code>double[][]<code> array of shape <code>[3][5]</code> you have 3 rows and
+	 * 5 columns.
+	 * 
+	 * @param m the matrix
+	 * @return the matrix with each row normalized separately
+	 */
+	public static final double[][] normalizeRows(double[][] m) {
+		double[][] normed = Maths.deepCopyPrimitiveArray(m);
+		for (int i = 0; i < m[0].length; i++) {
+			double norm = 0;
+			for (int j = 0; j < m.length; j++) {
+				norm += Math.pow(m[j][i], 2);
+			}
+			norm = Math.sqrt(norm);
+			for (int j = 0; j < m.length; j++) {
+				normed[j][i] /= norm;
+			}
+		}
+		return normed;
+	}
 }
