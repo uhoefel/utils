@@ -1044,7 +1044,7 @@ public final class Maths {
 	/**
 	 * Normalizes each column in the matrix. Note that Java is considered to be
 	 * row-major, i.e., for example, in a
-	 * <code>double[][]<code> array of shape <code>[3][5]</code> you have 3 rows and
+	 * <code>double[][]</code> array of shape <code>[3][5]</code> you have 3 rows and
 	 * 5 columns.
 	 * 
 	 * @param m the matrix
@@ -1068,7 +1068,7 @@ public final class Maths {
 	/**
 	 * Normalizes each row in the matrix. Note that Java is considered to be
 	 * row-major, i.e., for example, in a
-	 * <code>double[][]<code> array of shape <code>[3][5]</code> you have 3 rows and
+	 * <code>double[][]</code> array of shape <code>[3][5]</code> you have 3 rows and
 	 * 5 columns.
 	 * 
 	 * @param m the matrix

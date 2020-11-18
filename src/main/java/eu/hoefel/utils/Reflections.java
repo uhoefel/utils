@@ -59,11 +59,11 @@ public final class Reflections {
 	}
 
 	/**
-	 * Gets the (most specific/generic/any) constructor matching the given arguments for the given
-	 * class and creates a new instance.
+	 * Gets the (most specific/generic/any) constructor matching the given arguments
+	 * for the given class and creates a new instance.
 	 * 
 	 * @param <T>   the type of which you want a new instance
-	 * @param type 
+	 * @param type  the type of parameter signature aimed for
 	 * @param clazz the class of which you want a new instance
 	 * @param args  the arguments to pass on to the constructor
 	 * @return the new instance
