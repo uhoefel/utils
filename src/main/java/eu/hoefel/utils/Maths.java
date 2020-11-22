@@ -1,6 +1,7 @@
 package eu.hoefel.utils;
 
 import java.lang.reflect.Array;
+import java.util.stream.IntStream;
 
 /**
  * Math related convenience methods.
@@ -548,6 +549,16 @@ public final class Maths {
 	}
 
 	/**
+	 * Calculates the inverse of the given matrix.
+	 * 
+	 * @param matrix the non-null (square) matrix
+	 * @return the inverse
+	 */
+	public static final double[][] inverse(double[][] matrix) {
+		return luDecomposition(matrix, 1e-12).inverse();
+	}
+
+	/**
 	 * Calculates the determinant of the given matrix. For up to 4D matrices the
 	 * determinant is hardcoded and thus very fast. Higher dimensions use LU
 	 * decomposition.
@@ -596,8 +607,22 @@ public final class Maths {
 				- m[0][2] * m[1][1] * m[2][0] * m[3][3] + m[0][1] * m[1][2] * m[2][0] * m[3][3]
 				+ m[0][2] * m[1][0] * m[2][1] * m[3][3] - m[0][0] * m[1][2] * m[2][1] * m[3][3]
 				- m[0][1] * m[1][0] * m[2][2] * m[3][3] + m[0][0] * m[1][1] * m[2][2] * m[3][3];
-		default -> luDecomposition(m, 1e-12).determinant();
+		default -> luDecomposition(m, threshold).determinant();
 		};
+	}
+
+	/**
+	 * Return an array with ones on the diagonal and zeros elsewhere.
+	 * 
+	 * @param n the dimension
+	 * @return the identity matrix
+	 */
+	public static double[][] eye(int n) {
+		double[][] ret = new double[n][n];
+		for(int i = 0;i < ret.length;i++ ) {
+			ret[i][i] = 1.0;
+		}
+		return ret;
 	}
 
 	/**
@@ -608,13 +633,15 @@ public final class Maths {
 	 *                   (without the ones along the diagonal) and the U components
 	 * @param isSingular true if the LU decomposition is singular. This might be a
 	 *                   "real" singularity, or an "effective" singularity.
+	 * @param pivot      the pivoting vector
 	 * @param isEven     true if an even number of permutations occurred. Required
 	 *                   e.g. for the calculation of the determinant
 	 * 
 	 * @author Udo Hoefel
-	 * @see <a href="https://doi.org/10.1090/S0025-5718-1974-0331751-8">LU decomposition</a>
+	 * @see <a href="https://doi.org/10.1090/S0025-5718-1974-0331751-8">LU
+	 *      decomposition</a>
 	 */
-	private record LuDecomposition(double[][] lu, boolean isSingular, boolean isEven) {
+	private record LuDecomposition(double[][] lu, boolean isSingular, int[] pivot, boolean isEven) {
 
 		/**
 		 * Gets the determinant.
@@ -630,16 +657,63 @@ public final class Maths {
 			if (isEven) return det;
 			return -det;
 		}
+
+		/**
+		 * Calculates the inverse of the matrix that was decomposed in lower and upper
+		 * triangular matrices, i.e. this calculates A<sup>-1</sup> if A=LU.
+		 * 
+		 * @return the inverse of the original matrix
+		 * @throws IllegalStateException if the LU decomposition was singular
+		 */
+		public double[][] inverse() {
+			if (isSingular) {
+				throw new IllegalStateException("Decomposition was singular --> cannot calculate inverse");
+			}
+
+			int dimension = lu.length;
+			double[][] identityMatrix = eye(dimension);
+
+			// take pivoting into account
+			final double[][] inv = new double[dimension][dimension];
+			for (int row = 0; row < dimension; row++) {
+				for (int column = 0; column < dimension; column++) {
+					inv[row][column] = identityMatrix[pivot[row]][column];
+				}
+			}
+
+			// use forward substitution, solve LY = I
+			for (int column = 0; column < dimension; column++) {
+				for (int i = column + 1; i < dimension; i++) {
+					for (int j = 0; j < dimension; j++) {
+						inv[i][j] -= inv[column][j] * lu[i][column];
+					}
+				}
+			}
+
+			// use backward substitution, solve UX = Y
+			for (int column = dimension - 1; column >= 0; column--) {
+				for (int j = 0; j < dimension; j++) {
+					inv[column][j] /= lu[column][column];
+				}
+				for (int i = 0; i < column; i++) {
+					for (int j = 0; j < dimension; j++) {
+						inv[i][j] -= inv[column][j] * lu[i][column];
+					}
+				}
+			}
+
+			return inv;
+		}
 	}
 
 	/**
 	 * Placeholder for LU decompositions that yield effectively singular matrices.
 	 * Does not contain a meaningful LU matrix or isEven value.
 	 */
-	private static final LuDecomposition SINGULAR_VALUE_IN_LU_DECOMPOSITION = new LuDecomposition(new double[0][0], true, true);
+	private static final LuDecomposition SINGULAR_VALUE_IN_LU_DECOMPOSITION = new LuDecomposition(new double[0][0], true, new int[0], true);
 
 	/**
-	 * Calculates the LU decomposition.
+	 * Calculates the (Doolittle) LU decomposition.
 	 * 
 	 * @param matrix the matrix. Needs to be a square matrix.
 	 * @param threshold the threshold that determines if a matrix is effectively
@@ -651,11 +725,14 @@ public final class Maths {
 	 *         {@link LuDecomposition#determinant()}, and singular matrices are filtered out directly there
 	 */
 	private static final LuDecomposition luDecomposition(double[][] matrix, double threshold) {
-		// this is (currently) only used within determinant(double[][]), so we already
-		// know that we have a square matrix -> we do not need to check again
+		if (matrix.length != matrix[0].length) {
+			throw new IllegalArgumentException("LU decompostion can only be calculates for square matrices! "
+					+ "The given matrix was of size (%d,%d).".formatted(matrix.length, matrix[0].length));
+		}
 
 		// lu will hold both the L and the U matrix at the same time
 		double[][] lu = deepCopyPrimitiveArray(matrix);
+		int[] p = IntStream.range(0, lu.length).toArray(); // pivot vector
 		int numPermutations = 0;
 
 		// we know that numRows == numColumns, but for the sake of clarity we define
@@ -696,8 +773,9 @@ public final class Maths {
 			if (max != column) {
 				// the generic implementation of swap is quite useful here, as it avoids
 				// changing each value of the array rows and just exchanges the pointers, which
-				// is more performant
+				// is more performant I think
 				swap(lu, max, column);
+				swap(p, max, column);
 				numPermutations++;
 			}
 
@@ -708,7 +786,7 @@ public final class Maths {
 			}
 		}
 
-		return new LuDecomposition(lu, false, isEven(numPermutations));
+		return new LuDecomposition(lu, false, p, isEven(numPermutations));
 	}
 
 	/**
@@ -906,7 +984,8 @@ public final class Maths {
 			return (T[][]) Array.newInstance(objects.getClass().getComponentType(), 0, 0);
 		}
 		int n = objects.length;
-		int[][] indices = permutations(linspace(0, n - 1, 1));
+		int[] linspaced = IntStream.range(0, n).toArray();
+		int[][] indices = permutations(linspaced);
 		long factorial = (int) factorial(n);
 		if (factorial > MAX_ARRAY_SIZE) {
 			throw new IllegalArgumentException("The number of permutations (" + n + "!) exceeds the maximum array size!");
@@ -918,23 +997,6 @@ public final class Maths {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Return evenly spaced numbers over a specified interval.
-	 * 
-	 * @param x0 the starting value of the sequence
-	 * @param x1 the end value of the sequence (inclusive)
-	 * @param dx the stepsize
-	 * @return evenly spaced numbers ranging from {@code x0} to {@code x1}
-	 */
-	private static final int[] linspace(int x0, int x1, int dx) {
-		int n = (x1 - x0) / dx + 1;		
-		int[] f = new int[n];
-		for (int i = 0; i < n; i++) {
-			f[i] = x0 + i * dx;
-		}
-		return f;
 	}
 
 	/**

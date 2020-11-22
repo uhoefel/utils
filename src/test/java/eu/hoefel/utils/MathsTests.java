@@ -1,6 +1,7 @@
 package eu.hoefel.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -17,6 +18,14 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("javadoc")
 final class MathsTests {
 
+	@DisplayName("Testing matrix inverse")
+	@Test
+	void testMatrixInverse() {
+		double[][] m = {{2,1,3},{1,3,-3},{-2,4,4}};
+		assertArrayEquals(new double[][] {{0.3,0.1,-0.15},{1./40,7./40,9./80},{1./8,-1./8,1./16}}, Maths.inverse(m));
+	}
+
+	@DisplayName("Testing approximately equal")
 	@Test
 	void testApproxEqual() {
 		assertTrue(Maths.approximates(Double.NaN, Double.NaN, 0.0));
