@@ -1288,4 +1288,30 @@ public final class Maths {
 		
 		return c;
 	}
+
+	/**
+	 * Gets the exponent of the value if written in scientific notation, i.e.
+	 * "141.18754" will return 2.
+	 * 
+	 * @param x the value to get the exponent for
+	 * @return the exponent
+	 */
+	public static final int getBase10Exponent(double x) {
+		double abs = Math.abs(x);
+		int exp = 0;
+
+		if (abs > 10) {
+			do {
+				exp++;
+				abs *= 0.1;
+			} while (abs >= 10);
+		} else if (abs < 1) {
+			do {
+				exp--;
+				abs *= 10;
+			} while (abs < 1);
+		}
+
+		return exp;
+	}
 }
