@@ -1,6 +1,7 @@
 package eu.hoefel.utils;
 
 import java.lang.reflect.Array;
+import java.util.function.DoubleUnaryOperator;
 import java.util.stream.IntStream;
 
 /**
@@ -1149,5 +1150,88 @@ public final class Maths {
 			}
 		}
 		return normed;
+	}
+
+	/**
+	 * Calculates the numerical derivative.
+	 * 
+	 * @param func  the function to evaluate
+	 * @param x     the position at which to get the derivative
+	 * @param order the order of the derivative
+	 * @return the derivative <i>f</i>&prime;(<i>x</i>)
+	 */
+	public static final double derivative(DoubleUnaryOperator func, double x, int order) {
+		double h = x == 0 ? 1e-8 : x * Math.sqrt(Math.ulp(x));
+		int accuracy = 1;
+		
+		double[] grid = new double[2 * accuracy + 1];
+		for (int i = 0; i < grid.length; i++) {
+			grid[i] = x + (i - accuracy) * h;
+		}
+		
+		double[][] c = fornbergWeights(x, grid, order);
+		
+		double[] sum = new double[2 * accuracy + 1];
+		for (int i = 0; i < sum.length; i++) {
+			sum[i] = c[i][order] * func.applyAsDouble(grid[i]);
+		}
+		
+		return compensatedSum(sum);
+	}
+
+	/**
+	 * Calculates the weights useful for easily calculating the derivative by <a
+	 * href=http://dx.doi.org/10.4249/scholarpedia.9685">Bengt Fornbergs method</a>
+	 * in a fast and numerically stable way.
+	 * 
+	 * @param z the position where the approximations should be accurate
+	 * @param x the array with the x positions. Should be in ascending order, can be
+	 *          arbitrarily spaced.
+	 * @param m the order of the highest derivative that we want to calculate the
+	 *          weights for. For m=0 the interpolation coefficients are found.
+	 * @return an array with size [x.length][m+1] containing for each position the
+	 *         weights for the derivatives of order 0,1,...,m.
+	 * 
+	 * @see <a href="https://www.jstor.org/stable/2653239">Fornbergs 1998 paper</a>
+	 */
+	public static final double[][] fornbergWeights(double z, double[] x, int m) {
+		if (m < 0) {
+			throw new IllegalArgumentException("No weights for negative orders can be calculated!");
+		} else if (x.length <= m) {
+			throw new IllegalArgumentException("Need more gridpoints than the order of the derivative!");
+		}
+		
+		int n = x.length;
+		double[][] c = new double[n][m + 1];
+		
+		double c1 = 1;
+		double c4 = x[0] - z;
+		c[0][0] = 1;
+
+		for (int i = 1; i < n; i++) {
+			int mn = Math.min(i, m);
+			double c2 = 1;
+			double c5 = c4;
+			c4 = x[i] - z;
+			for (int j = 0; j < i; j++) {
+				double c3 = x[i] - x[j];
+				c2 *= c3;
+				if (j == i - 1) {
+					for (int k = mn; k > 0; k--) {
+						c[i][k] = c1 * (k * c[i-1][k-1] - c5 * c[i-1][k]) / c2;
+					}
+					c[i][0] = -c1 * c5 * c[i-1][0] / c2;
+				}
+				
+				for (int k = mn; k > 0; k--) {
+					c[j][k] = (c4 * c[j][k] - k * c[j][k-1]) / c3;
+				}
+				c[j][0] = c4 * c[j][0] / c3;
+			}
+
+			c1 = c2;
+		}
+		
+		return c;
 	}
 }
