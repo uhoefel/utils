@@ -1181,7 +1181,7 @@ public final class Maths {
 
 	/**
 	 * Calculates the weights useful for easily calculating the derivative by <a
-	 * href=http://dx.doi.org/10.4249/scholarpedia.9685">Bengt Fornbergs method</a>
+	 * href="http://dx.doi.org/10.4249/scholarpedia.9685">Bengt Fornbergs method</a>
 	 * in a fast and numerically stable way.
 	 * 
 	 * @param z the position where the approximations should be accurate
