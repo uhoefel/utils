@@ -2,6 +2,7 @@ package eu.hoefel.utils;
 
 import java.lang.reflect.Array;
 import java.util.function.DoubleUnaryOperator;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
@@ -1156,11 +1157,11 @@ public final class Maths {
 	 * Calculates the numerical derivative.
 	 * 
 	 * @param func  the function to evaluate
-	 * @param x     the position at which to get the derivative
 	 * @param order the order of the derivative
+	 * @param x     the position at which to get the derivative
 	 * @return the derivative <i>f</i>&prime;(<i>x</i>)
 	 */
-	public static final double derivative(DoubleUnaryOperator func, double x, int order) {
+	public static final double derivative(DoubleUnaryOperator func, int order, double x) {
 		double h = x == 0 ? 1e-8 : x * Math.sqrt(Math.ulp(x));
 		int accuracy = 1;
 		
@@ -1177,6 +1178,59 @@ public final class Maths {
 		}
 		
 		return compensatedSum(sum);
+	}
+
+	/**
+	 * Calculates the partial derivatives numerically.
+	 * 
+	 * @param f        the function to evaluate
+	 * @param order    the order of the derivative
+	 * @param position the position at which to get the partial derivatives
+	 * @param i        the dimension (i.e. the index in the given position) with
+	 *                 respect to which the partial derivatives are formed
+	 * @return the partial derivatives
+	 *         ∂<sub><i>i</i></sub> <b><i>f</i></b>(position)
+	 */
+	public static final double[] partialDerivatives(Function<double[], double[]> f, int order, double[] position, int i) {
+		double h = position[i] == 0 ? 1e-8 : position[i] * Math.sqrt(Math.ulp(position[i]));
+		int accuracy = 1;
+		
+		double[] grid = new double[2 * accuracy + 1];
+		for (int j = 0; j < grid.length; j++) {
+			grid[j] = position[i] + (j - accuracy) * h;
+		}
+		
+		double[][] c = fornbergWeights(position[i], grid, order);
+		
+		double[] partialDerivatives = new double[position.length];
+		double[][] sums = new double[partialDerivatives.length][grid.length];
+
+		for (int j = 0; j < grid.length; j++) {
+			double[] func = f.apply(updatePosition(position, i, grid[j]));
+			for (int k = 0; k < partialDerivatives.length; k++) {
+				sums[k][j] = c[j][order] * func[k];
+			}
+		}
+
+		for (int j = 0; j < partialDerivatives.length; j++) {
+			partialDerivatives[j] = compensatedSum(sums[j]);
+		}
+		
+		return partialDerivatives;
+	}
+
+	/**
+	 * Updates the position at the specified dimension to value.
+	 * 
+	 * @param position  the original position
+	 * @param dimension the dimension to update
+	 * @param value     the new value
+	 * @return the new position
+	 */
+	public static final double[] updatePosition(double[] position, int dimension, double value) {
+		double[] ret = position.clone();
+		ret[dimension] = value;
+		return ret;
 	}
 
 	/**

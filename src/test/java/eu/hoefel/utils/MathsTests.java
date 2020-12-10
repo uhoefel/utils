@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,5 +95,31 @@ final class MathsTests {
 		
 		// test m=1
 		assertArrayEquals(expected[1], m1Weights, 1e-16);
+	}
+
+	@DisplayName("Testing partial derivatives")
+	@Test
+	void testPartialDerivatives() {
+		Function<double[], double[]> f = x -> {
+			double[] ret = new double[3];
+			ret[0] = x[0] * Math.sin(x[1]) * Math.cos(x[2]);
+			ret[1] = x[0] * Math.sin(x[1]) * Math.sin(x[2]);
+			ret[2] = Math.tan(x[2]);
+			return ret;
+		};
+		
+		double[] position = {1,2,3};
+		
+		double[] pd_0 = Maths.partialDerivatives(f, 1, position, 0);
+		double[] pd_1 = Maths.partialDerivatives(f, 1, position, 1);
+		double[] pd_2 = Maths.partialDerivatives(f, 1, position, 2);
+		
+		double[] expected_pd_0 = {-0.90019762973, 0.1283200602, 0};
+		double[] expected_pd_1 = {0.41198224566, -0.05872664492, 0};
+		double[] expected_pd_2 = {-0.1283200602, -0.90019762973, 1.0203195169424269};
+		
+		assertArrayEquals(expected_pd_0, pd_0, 5e-9);
+		assertArrayEquals(expected_pd_1, pd_1, 5e-9);
+		assertArrayEquals(expected_pd_2, pd_2, 5e-9);
 	}
 }
