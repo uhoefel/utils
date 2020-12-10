@@ -78,4 +78,21 @@ final class MathsTests {
 		assertFalse(Maths.isEven(233));
 		assertFalse(Maths.isEven(Long.MAX_VALUE));
 	}
+	
+	@DisplayName("Testing Fornberg weights")
+	@Test
+	void testFornbergWeights() {
+		double[] grid = {-2,-1,0,1,2};
+		double[][] expected = {{0,0,1,0,0}, {0.08333333333333333,-0.6666666666666666,0,0.6666666666666666,-0.08333333333333333}};
+		
+		double[][] weights = Maths.fornbergWeights(0, grid, 1);
+		double[] m0Weights = { weights[0][0], weights[1][0], weights[2][0], weights[3][0], weights[4][0] };
+		double[] m1Weights = { weights[0][1], weights[1][1], weights[2][1], weights[3][1], weights[4][1] };
+		
+		// test m=0
+		assertArrayEquals(expected[0], m0Weights, 1e-16);
+		
+		// test m=1
+		assertArrayEquals(expected[1], m1Weights, 1e-16);
+	}
 }
