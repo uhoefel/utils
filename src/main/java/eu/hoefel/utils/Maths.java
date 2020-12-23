@@ -1314,4 +1314,28 @@ public final class Maths {
 
 		return exp;
 	}
+
+	/**
+	 * Flattens the given array by one level.
+	 * 
+	 * @param <T> the type
+	 * @param array the array
+	 * @return the flattened matrix
+	 */
+	public static final <T> T flatten(T[] array) {
+		int size = 0;
+		for (int i = 0; i < array.length; i++) {
+			size += Array.getLength(array[i]);
+		}
+
+		@SuppressWarnings("unchecked")
+		T flat = (T) Array.newInstance(array.getClass().getComponentType().getComponentType(), size);
+		int index = 0;
+		for (int i = 0; i < array.length; i++) {
+			int numNew = Array.getLength(array[i]);
+			System.arraycopy(array[i], 0, flat, index, numNew);
+			index += numNew;
+		}
+		return flat;
+	}
 }

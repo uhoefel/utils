@@ -122,4 +122,14 @@ final class MathsTests {
 		assertArrayEquals(expected_pd_1, pd_1, 5e-9);
 		assertArrayEquals(expected_pd_2, pd_2, 5e-9);
 	}
+
+	@DisplayName("Testing flattening")
+	@Test
+	void testFlattening() {
+		double[][] a = {{1,2},{3,4,5},{6,7,8,9}};
+		assertArrayEquals(new double[] {1,2,3,4,5,6,7,8,9}, Maths.flatten(a));
+		
+		double[][][] b = {{{1,2},{3,4,5},{6,7,8,9}},{{0}}};
+		assertArrayEquals(new double[][] {{1,2},{3,4,5},{6,7,8,9},{0}}, Maths.flatten(b));
+	}
 }
