@@ -1,6 +1,7 @@
 package eu.hoefel.utils;
 
 import java.lang.reflect.Array;
+import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -342,6 +343,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final void swap(boolean[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		boolean temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -357,6 +360,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final void swap(byte[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		byte temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -372,6 +377,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final void swap(short[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		short temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -387,6 +394,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final void swap(int[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		int temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -402,6 +411,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final void swap(long[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		long temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -417,6 +428,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final void swap(float[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		float temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -432,6 +445,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final void swap(double[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		double temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -447,6 +462,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final void swap(char[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		char temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -463,6 +480,8 @@ public final class Maths {
 	 *          {@code i}
 	 */
 	public static final <T> void swap(T[] a, int i, int j) {
+		Objects.requireNonNull(a);
+
 		T temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
@@ -496,6 +515,8 @@ public final class Maths {
 	 *      Kahan-Babuška-Summation-Algorithm</a>
 	 */
 	private static final double compensatedSum(double[] a, int order) {
+		Objects.requireNonNull(a);
+
 		double[] summands = new double[order + 1];
 		for (int i = 0; i < a.length; i++) {
 			// we need at least first order
@@ -543,6 +564,8 @@ public final class Maths {
 	 * @return the sum of the elements of a
 	 */
 	public static final double sum(double[] a) {
+		Objects.requireNonNull(a);
+
 		double ret = 0;
 		for (int i = 0; i < a.length; i++) {
 			ret += a[i];
@@ -557,6 +580,8 @@ public final class Maths {
 	 * @return the inverse
 	 */
 	public static final double[][] inverse(double[][] matrix) {
+		Objects.requireNonNull(matrix);
+
 		return luDecomposition(matrix, 1e-12).inverse();
 	}
 
@@ -586,6 +611,8 @@ public final class Maths {
 	 * @return the determinant
 	 */
 	public static final double determinant(double[][] m, double threshold) {
+		Objects.requireNonNull(m);
+
 		if (m.length != m[0].length) {
 			throw new IllegalArgumentException("Determinant can only be calculates for square matrices! "
 					+ "The given matrix was of size (%d,%d).".formatted(m.length, m[0].length));
@@ -595,8 +622,8 @@ public final class Maths {
 		case 1 -> m[0][0];
 		case 2 -> m[0][0] * m[1][1] - m[0][1] * m[1][0];
 		case 3 -> m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) 
-				- m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
-				+ m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
+		- m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
+		+ m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
 		case 4 -> m[0][3] * m[1][2] * m[2][1] * m[3][0] - m[0][2] * m[1][3] * m[2][1] * m[3][0]
 				- m[0][3] * m[1][1] * m[2][2] * m[3][0] + m[0][1] * m[1][3] * m[2][2] * m[3][0]
 				+ m[0][2] * m[1][1] * m[2][3] * m[3][0] - m[0][1] * m[1][2] * m[2][3] * m[3][0]
@@ -837,6 +864,7 @@ public final class Maths {
 	public static final int leviCivita(int... indices) {
 		// As a reference see https://github.com/JuliaLang/julia/pull/10313/files
 		// this code follows the logic of the above
+		Objects.requireNonNull(indices);
 
 		if (indices.length == 3) {
 			boolean valid = indices[0] > 0 && indices[0] <= 3 && indices[1] > 0 && indices[1] <= 3 && indices[2] > 0 && indices[2] <= 3;
@@ -878,6 +906,8 @@ public final class Maths {
 	 * @return the index of the next true
 	 */
 	private static final int findNextTrueIndex(boolean[] a, int startIndex) {
+		Objects.requireNonNull(a);
+
 		for (int i = startIndex; i < a.length; i++) {
 			if (a[i]) return i;
 		}
@@ -980,11 +1010,12 @@ public final class Maths {
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> T[][] permutations(T... objects) {
-		if (objects == null) {
-			throw new IllegalArgumentException("Cannot create permutations of null.");
-		} else if (objects.length == 0) {
+		Objects.requireNonNull(objects);
+
+		if (objects.length == 0) {
 			return (T[][]) Array.newInstance(objects.getClass().getComponentType(), 0, 0);
 		}
+
 		int n = objects.length;
 		int[] linspaced = IntStream.range(0, n).toArray();
 		int[][] indices = permutations(linspaced);
@@ -1010,42 +1041,40 @@ public final class Maths {
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> T deepCopyPrimitiveArray(T array) {
-		if (array == null) {
-			throw new IllegalArgumentException("null is not an array");
-		} else {
-			Class<?> c = Types.elementType(array.getClass());
-			if (c.isPrimitive()) {
-				int dim = Types.dimension(array.getClass());
-				if (dim == 1) {
-					if (array instanceof double[] d) {
-						return (T) d.clone();
-					} else if (array instanceof int[] integer) {
-						return (T) integer.clone();
-					} else if (array instanceof long[] lo) {
-						return (T) lo.clone();
-					} else if (array instanceof boolean[] b) {
-						return (T) b.clone();
-					} else if (array instanceof float[] f) {
-						return (T) f.clone();
-					} else if (array instanceof short[] s) {
-						return (T) s.clone();
-					} else if (array instanceof char[] ch) {
-						return (T) ch.clone();
-					} else {
-						// has to be byte[]
-						return (T) ((byte[]) array).clone();
-					}
+		Objects.requireNonNull(array);
+
+		Class<?> c = Types.elementType(array.getClass());
+		if (c.isPrimitive()) {
+			int dim = Types.dimension(array.getClass());
+			if (dim == 1) {
+				if (array instanceof double[] d) {
+					return (T) d.clone();
+				} else if (array instanceof int[] integer) {
+					return (T) integer.clone();
+				} else if (array instanceof long[] lo) {
+					return (T) lo.clone();
+				} else if (array instanceof boolean[] b) {
+					return (T) b.clone();
+				} else if (array instanceof float[] f) {
+					return (T) f.clone();
+				} else if (array instanceof short[] s) {
+					return (T) s.clone();
+				} else if (array instanceof char[] ch) {
+					return (T) ch.clone();
 				} else {
-					int len = Array.getLength(array);
-					T ret = (T) Array.newInstance(array.getClass().getComponentType(), len);
-					for (int i = 0; i < len; i++) {
-						Array.set(ret, i, deepCopyPrimitiveArray(Array.get(array, i)));
-					}
-					return ret;
+					// has to be byte[]
+					return (T) ((byte[]) array).clone();
 				}
 			} else {
-				throw new IllegalArgumentException("%s is not a primitive array".formatted(array.getClass().getSimpleName()));
+				int len = Array.getLength(array);
+				T ret = (T) Array.newInstance(array.getClass().getComponentType(), len);
+				for (int i = 0; i < len; i++) {
+					Array.set(ret, i, deepCopyPrimitiveArray(Array.get(array, i)));
+				}
+				return ret;
 			}
+		} else {
+			throw new IllegalArgumentException("%s is not a primitive array".formatted(array.getClass().getSimpleName()));
 		}
 	}
 
@@ -1061,6 +1090,9 @@ public final class Maths {
 	 *         ∂<sub><i>x</i></sub><i>f</i>
 	 */
 	public static final double[] forwardDifferences(double[] f0, double[] f1, double dx) {
+		Objects.requireNonNull(f0);
+		Objects.requireNonNull(f1);
+
 		double[] ret = new double[f0.length];
 		for (int i = 0; i < ret.length; i++) {
 			ret[i] = (f1[i] - f0[i]) / dx;
@@ -1081,6 +1113,9 @@ public final class Maths {
 	 *         ∂<sub><i>x</i></sub><i>f</i>
 	 */
 	public static final double[] centralDifferences(double[] f0, double[] f2, double dx) {
+		Objects.requireNonNull(f0);
+		Objects.requireNonNull(f2);
+
 		double[] ret = new double[f0.length];
 		for (int i = 0; i < ret.length; i++) {
 			ret[i] = (f2[i] - f0[i]) / (2 * dx);
@@ -1096,6 +1131,9 @@ public final class Maths {
 	 * @return the product
 	 */
 	public static final double[] matrixVectorMul(double[][] matrix, double[] vector) {
+		Objects.requireNonNull(matrix);
+		Objects.requireNonNull(vector);
+
 		double[] ret = new double[vector.length];
 		for (int row = 0; row < matrix.length; row++) {
 			for (int column = 0; column < matrix[row].length; column++) {
@@ -1115,6 +1153,8 @@ public final class Maths {
 	 * @return the matrix with each column normalized separately
 	 */
 	public static final double[][] normalizeColumns(double[][] m) {
+		Objects.requireNonNull(m);
+
 		double[][] normed = deepCopyPrimitiveArray(m);
 		for (int i = 0; i < m.length; i++) {
 			double norm = 0;
@@ -1139,6 +1179,8 @@ public final class Maths {
 	 * @return the matrix with each row normalized separately
 	 */
 	public static final double[][] normalizeRows(double[][] m) {
+		Objects.requireNonNull(m);
+
 		double[][] normed = deepCopyPrimitiveArray(m);
 		for (int i = 0; i < m[0].length; i++) {
 			double norm = 0;
@@ -1162,21 +1204,23 @@ public final class Maths {
 	 * @return the derivative <i>f</i>&prime;(<i>x</i>)
 	 */
 	public static final double derivative(DoubleUnaryOperator func, int order, double x) {
+		Objects.requireNonNull(func);
+
 		double h = x == 0 ? 1e-8 : x * Math.sqrt(Math.ulp(x));
 		int accuracy = 1;
-		
+
 		double[] grid = new double[2 * accuracy + 1];
 		for (int i = 0; i < grid.length; i++) {
 			grid[i] = x + (i - accuracy) * h;
 		}
-		
+
 		double[][] c = fornbergWeights(x, grid, order);
-		
+
 		double[] sum = new double[2 * accuracy + 1];
 		for (int i = 0; i < sum.length; i++) {
 			sum[i] = c[i][order] * func.applyAsDouble(grid[i]);
 		}
-		
+
 		return compensatedSum(sum);
 	}
 
@@ -1192,16 +1236,19 @@ public final class Maths {
 	 *         ∂<sub><i>i</i></sub> <b><i>f</i></b>(position)
 	 */
 	public static final double[] partialDerivatives(Function<double[], double[]> f, int order, double[] position, int i) {
+		Objects.requireNonNull(f);
+		Objects.requireNonNull(position);
+		
 		double h = position[i] == 0 ? 1e-8 : position[i] * Math.sqrt(Math.ulp(position[i]));
 		int accuracy = 1;
-		
+
 		double[] grid = new double[2 * accuracy + 1];
 		for (int j = 0; j < grid.length; j++) {
 			grid[j] = position[i] + (j - accuracy) * h;
 		}
-		
+
 		double[][] c = fornbergWeights(position[i], grid, order);
-		
+
 		double[] partialDerivatives = new double[position.length];
 		double[][] sums = new double[partialDerivatives.length][grid.length];
 
@@ -1215,7 +1262,7 @@ public final class Maths {
 		for (int j = 0; j < partialDerivatives.length; j++) {
 			partialDerivatives[j] = compensatedSum(sums[j]);
 		}
-		
+
 		return partialDerivatives;
 	}
 
@@ -1228,6 +1275,8 @@ public final class Maths {
 	 * @return the new position
 	 */
 	public static final double[] updatePosition(double[] position, int dimension, double value) {
+		Objects.requireNonNull(position);
+
 		double[] ret = position.clone();
 		ret[dimension] = value;
 		return ret;
@@ -1249,15 +1298,17 @@ public final class Maths {
 	 * @see <a href="https://www.jstor.org/stable/2653239">Fornbergs 1998 paper</a>
 	 */
 	public static final double[][] fornbergWeights(double z, double[] x, int m) {
+		Objects.requireNonNull(x);
+
 		if (m < 0) {
 			throw new IllegalArgumentException("No weights for negative orders can be calculated!");
 		} else if (x.length <= m) {
 			throw new IllegalArgumentException("Need more gridpoints than the order of the derivative!");
 		}
-		
+
 		int n = x.length;
 		double[][] c = new double[n][m + 1];
-		
+
 		double c1 = 1;
 		double c4 = x[0] - z;
 		c[0][0] = 1;
@@ -1276,7 +1327,7 @@ public final class Maths {
 					}
 					c[i][0] = -c1 * c5 * c[i-1][0] / c2;
 				}
-				
+
 				for (int k = mn; k > 0; k--) {
 					c[j][k] = (c4 * c[j][k] - k * c[j][k-1]) / c3;
 				}
@@ -1285,7 +1336,7 @@ public final class Maths {
 
 			c1 = c2;
 		}
-		
+
 		return c;
 	}
 
@@ -1318,11 +1369,13 @@ public final class Maths {
 	/**
 	 * Flattens the given array by one level.
 	 * 
-	 * @param <T> the type
+	 * @param <T>   the type
 	 * @param array the array
 	 * @return the flattened matrix
 	 */
 	public static final <T> T flatten(T[] array) {
+		Objects.requireNonNull(array);
+
 		int size = 0;
 		for (int i = 0; i < array.length; i++) {
 			size += Array.getLength(array[i]);
@@ -1337,5 +1390,57 @@ public final class Maths {
 			index += numNew;
 		}
 		return flat;
+	}
+
+	/**
+	 * Transposes the two outermost dimensions of the array.
+	 * 
+	 * @param <T>    the type of the matrix. Needs to be at least a 2D array, which
+	 *               is not enforced statically here to allow the input of primitive
+	 *               2D arrays, which are just T[].
+	 * @param matrix the 2D matrix, not null
+	 * @return the transposed matrix
+	 */
+	@SuppressWarnings("unchecked")
+	public static final <T> T[] transpose(T[] matrix){
+		Objects.requireNonNull(matrix);
+
+		// special case for double[][], which will be the most common usecase
+		if (matrix instanceof double[][] doubleMatrix) {
+			double[][] transposed = new double[doubleMatrix[0].length][doubleMatrix.length];
+			for (int i = 0; i < doubleMatrix.length; i++) {
+				for (int j = 0; j < doubleMatrix[0].length; j++) {
+					transposed[j][i] = doubleMatrix[i][j];
+				}
+			}
+			return (T[]) transposed;
+		}
+
+		// make sure we have at least a 2D array
+		if (Types.dimension(matrix.getClass()) <= 2) {
+			throw new IllegalArgumentException("Need at least a 2D array for transposing!");
+		}
+
+		// make sure we have actually a 2D object array, which we don't have for
+		// primitive 2D arrays
+		Object[][] boxed = Types.box(matrix);
+
+		int m = Array.getLength(boxed);
+		int n = Array.getLength(Array.get(boxed, 0));
+		Class<?> componentType = boxed.getClass().getComponentType().getComponentType();
+		T[][] newArray = (T[][]) Array.newInstance(componentType, n, m);
+
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				newArray[j][i] = (T) boxed[i][j];
+			}
+		}
+		
+		
+		if (Types.elementType(matrix.getClass()).isPrimitive()) {
+			return Types.unbox(newArray);
+		}
+		
+		return (T[]) newArray;
 	}
 }

@@ -132,4 +132,14 @@ final class MathsTests {
 		double[][][] b = {{{1,2},{3,4,5},{6,7,8,9}},{{0}}};
 		assertArrayEquals(new double[][] {{1,2},{3,4,5},{6,7,8,9},{0}}, Maths.flatten(b));
 	}
+
+	@DisplayName("Testing transposing")
+	@Test
+	void testTransposing() {
+		double[][] a = {{1,2,3,4},{6,7,8,9}};
+		assertArrayEquals(new double[][] {{1,6},{2,7},{3,8},{4,9}}, Maths.transpose(a));
+		
+		double[][][] b = {{{1,2,3,4},{6,7,8,9}}};
+		assertArrayEquals(new double[][][] {{{1,2,3,4}},{{6,7,8,9}}}, Maths.transpose(b));
+	}
 }
