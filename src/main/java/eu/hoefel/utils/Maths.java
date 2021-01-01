@@ -334,6 +334,22 @@ public final class Maths {
 	}
 
 	/**
+	 * Calculates {@code sin(x)/x}.
+	 * 
+	 * @param x the value at which to evaluate sinc(x)
+	 */
+	public static final double sinc(double x) {
+		if (x == 0) return 1;
+        if (Math.abs(x) <= 6.25e-3) {
+			// Uses Taylor series approximation. The threshold value is chosen such that the
+			// relative error if the check succeeds is lower than double precision accuracy.
+            double x2 = Math.pow(x, 2);
+            return ((x2 - 20) * x2 + 120) / 120;
+        }
+        return Math.sin(x) / x;
+	}
+
+	/**
 	 * Swaps {@code i} and {@code j} in {@code a} (hence no return).
 	 * 
 	 * @param a the array in which to swap the indices
