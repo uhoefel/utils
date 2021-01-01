@@ -334,6 +334,56 @@ public final class Maths {
 	}
 
 	/**
+	 * Calculates the inverse hyperbolic tangent.
+	 * 
+	 * @param x the value, between -1 and 1
+	 * @return the inverse hyperbolic tangent
+	 */
+	public static final double artanh(double x) {
+		return 0.5 * Math.log((1 + x) / (1 - x));
+	}
+
+	/**
+	 * Calculates the inverse hyperbolic cotangent.
+	 * 
+	 * @param x the value, lower than -1 or above 1
+	 * @return the inverse hyperbolic cotangent
+	 */
+	public static final double arcoth(double x) {
+		return 0.5 * Math.log((x + 1) / (x - 1));
+	}
+	
+	/**
+	 * Calculates the inverse hyperbolic secant.
+	 * 
+	 * @param x the value, lower than -1 or above 0
+	 * @return the inverse hyperbolic secant
+	 */
+	public static final double arsech(double x) {
+		if (x < -1) {
+			return Math.log((1 - Math.sqrt(1 - Math.pow(x, 2))) / x);
+		} else if (x > 0) {
+			return Math.log((1 + Math.sqrt(1 - Math.pow(x, 2))) / x);
+		}
+		throw new IllegalArgumentException("x may not be between -1 and 1, but it is " + x);
+	}
+
+	/**
+	 * Calculates the inverse hyperbolic cosecant.
+	 * 
+	 * @param x the value, not 0
+	 * @return the inverse hyperbolic cosecant
+	 */
+	public static final double arcsch(double x) {
+		if (x < 0) {
+			return Math.log((1 - Math.sqrt(1 + Math.pow(x, 2))) / x);
+		} else if (x > 0) {
+			return Math.log((1 + Math.sqrt(1 + Math.pow(x, 2))) / x);
+		}
+		throw new IllegalArgumentException("x may not be 0");
+	}
+
+	/**
 	 * Calculates {@code sin(x)/x}.
 	 * 
 	 * @param x the value at which to evaluate sinc(x)
