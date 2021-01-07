@@ -3,6 +3,7 @@
 [![](https://img.shields.io/github/issues/uhoefel/utils?style=flat-square)](https://github.com/uhoefel/utils/issues)
 [![](https://img.shields.io/github/stars/uhoefel/utils?style=flat-square)](https://github.com/uhoefel/utils/stargazers)
 [![DOI](https://zenodo.org/badge/309825766.svg)](https://zenodo.org/badge/latestdoi/309825766)
+[![Maven Central](https://img.shields.io/maven-central/v/eu.hoefel/utils.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22eu.hoefel%22%20AND%20a:%22utils%22)
 [![](https://img.shields.io/github/license/uhoefel/utils?style=flat-square)](https://choosealicense.com/licenses/mit/)
 
 Utils is a small Java module designed to provide a number of convenience methods for regular expressions, mathematical operations, operations on strings, etc.
@@ -24,7 +25,7 @@ The artifact can be found at maven central:
 <dependency>
     <groupId>eu.hoefel</groupId>
     <artifactId>utils</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.12</version>
 </dependency>
 ```
 
