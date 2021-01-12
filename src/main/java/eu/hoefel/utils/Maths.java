@@ -1509,4 +1509,36 @@ public final class Maths {
 		
 		return (T[]) newArray;
 	}
+
+	/**
+	 * Finds the maximum in the given values.
+	 * 
+	 * @param values the values
+	 * @return the maximum. If a NaN occurs somewhere in the values, the result will
+	 *         be NaN.
+	 */
+	public static final double max(double... values) {
+		double ret = Double.NEGATIVE_INFINITY;
+		for (double value : values) {
+			ret = Math.max(value, ret);
+			if (Double.isNaN(ret)) break;
+		}
+		return ret;
+	}
+
+	/**
+	 * Finds the minimum in the given values.
+	 * 
+	 * @param values the values
+	 * @return the minimum. If a NaN occurs somewhere in the values, the result will
+	 *         be NaN.
+	 */
+	public static final double min(double... values) {
+		double ret = Double.POSITIVE_INFINITY;
+		for (double value : values) {
+			ret = Math.min(value, ret);
+			if (Double.isNaN(ret)) break;
+		}
+		return ret;
+	}
 }
