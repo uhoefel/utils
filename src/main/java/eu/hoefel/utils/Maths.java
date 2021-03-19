@@ -387,6 +387,7 @@ public final class Maths {
 	 * Calculates {@code sin(x)/x}.
 	 * 
 	 * @param x the value at which to evaluate sinc(x)
+	 * @return sinc(x)
 	 */
 	public static final double sinc(double x) {
 		if (x == 0) return 1;
