@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
  * 
  * @author Udo Hoefel
  */
-@SuppressWarnings("javadoc")
 final class MathsTests {
 
 	@DisplayName("Testing matrix inverse")

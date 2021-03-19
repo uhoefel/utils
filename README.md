@@ -10,6 +10,7 @@ Utils is a small Java module designed to provide a number of convenience methods
 It aims at having as few dependencies as possible (especially since there are few modularized libraries are out there).
 
 Some examples:
+
 ```java
 Maths.isLong("123L");
 Maths.compensatedSum(1e100, 1e-100, 1, 2e-18);
@@ -21,14 +22,15 @@ Installation
 ============
 
 The artifact can be found at maven central:
+
 ```xml
 <dependency>
     <groupId>eu.hoefel</groupId>
     <artifactId>utils</artifactId>
-    <version>0.1.13</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
 Requirements
 ============
-Utils is designed to work with Java 15+. It needs preview-features enabled.
+Utils is designed to work with Java 16+.
