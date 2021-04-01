@@ -241,7 +241,7 @@ public final class Reflections {
 	 *         parameter
 	 */
 	private static final boolean incompatibleTypesWithWidening(Parameter p, Object arg)  {
-		Objects.nonNull(p);
+		Objects.requireNonNull(p);
 		return (arg == null && p.getType().isPrimitive()) // nulls cannot be cast to primitives
 				 // if arg is non-null and the types dont match -> incompatible
 				// note the small but relevant difference to incompatibleTypesWithoutWidening
@@ -332,7 +332,7 @@ public final class Reflections {
 		// we do not check the last parameter here as it may be a vararg
 		for (int i = 0; i < params.length - 1; i++) {
 			if (i >= internalArgs.length) {
-				continue;
+				continue; // this jump is not redundant, as we otherwise check arguments that we do not want to check
 			} else if (Types.boxedClass(params[i].getType()) != internalArgs[i].getClass()) {
 				return false;
 			}

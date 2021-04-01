@@ -25,7 +25,7 @@ public final class Strings {
 	 * Non-breakable small space. Be aware that this is <em>not</em> removed via
 	 * {@link String#trim()}.
 	 */
-	public static final String SMALL_NON_BREAKABLE_SPACE = " ";
+	public static final String SMALL_NON_BREAKABLE_SPACE = "\u202F";
 
 	/** Helper array to optimize {@link #ordinalNumeral(int)}. */
 	private static final String[] ORDINAL_NUMERAL = { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
