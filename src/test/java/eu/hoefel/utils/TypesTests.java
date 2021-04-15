@@ -58,4 +58,15 @@ final class TypesTests {
 		assertEquals(val3, box3.booleanValue());
 		assertEquals(val3, unbox3);
 	}
+
+	@DisplayName("Testing extended classForName")
+	@Test
+	void testClassforName() {
+		assertEquals(int.class, Types.classForName("int"));
+		assertEquals(Types.class, Types.classForName("eu.hoefel.utils.Types"));
+		assertEquals(Types[][][][].class, Types.classForName("eu.hoefel.utils.Types[][][][]"));
+		assertEquals(float[][].class, Types.classForName("float[][]"));
+		assertEquals(Character.class, Types.classForName("Character"));
+		assertEquals(Double[].class, Types.classForName("Double[]"));
+	}
 }

@@ -1,6 +1,7 @@
 package eu.hoefel.utils;
 
 import java.lang.reflect.Array;
+import java.util.Objects;
 
 /**
  * Convenience methods with respect to types.
@@ -232,5 +233,123 @@ public final class Types {
 	public static final boolean isCompatible(Class<?> clazz1, Class<?> clazz2) {
 		return clazz1 == clazz2 || (clazz1 != null && clazz2 != null
 				&& (clazz1.isAssignableFrom(clazz2) || boxedClass(clazz1).isAssignableFrom(clazz2)));
+	}
+
+	/**
+	 * Return the java {@link java.lang.Class} object with the specified class name.
+	 *
+	 * This is an "extended" {@link java.lang.Class#forName(java.lang.String)}
+	 * operation.
+	 *
+	 * <ul>
+	 * <li>It is able to return Class objects for primitive types (including arrays)
+	 * <li>Classes in name space `java.lang` do not need the fully qualified name
+	 * <li>It does not throw a checked Exception
+	 * </ul>
+	 * 
+	 * @param className the class name, may not be null
+	 * @return the class corresponding to the given class name
+	 *
+	 * @throws IllegalArgumentException if no class can be found
+	 * @see <a href="https://stackoverflow.com/a/45660967/5599820">stackoverflow inspiration</a>
+	 */
+	public static final Class<?> classForName(String className) {
+		Objects.requireNonNull(className);
+
+		var typeInfo = decomposeTypeInfo(className);
+
+	    var elementClass = switch (typeInfo.elementType()) {
+	        case "boolean" -> boolean.class;
+	        case "byte"    -> byte.class;
+	        case "short"   -> short.class;
+	        case "int"     -> int.class;
+	        case "long"    -> long.class;
+	        case "float"   -> float.class;
+	        case "double"  -> double.class;
+	        case "char"    -> char.class;
+	        case "void"    -> void.class;
+	        default        -> parseNonprimitiveType(typeInfo.elementType());
+	    };
+	    
+	    Class<?> targetClass = elementClass;
+	    for (int i = 0; i < typeInfo.dim(); i++) {
+	    	targetClass = targetClass.arrayType();
+		}
+	    return targetClass;
+	}
+
+	/**
+	 * Holds decomposed type info, e.g. for a class name "int[]" this record would
+	 * hold an {@code elementType} "int" and a {@code dim} of 1.
+	 * 
+	 * @param elementType the element type of a type, may not be null
+	 * @param dim         the dimension of array part of a type (may be 0 if not an
+	 *                    array). May not be negative.
+	 * 
+	 * @author Udo Hoefel
+	 */
+	private static record DecomposedTypeInfo(String elementType, int dim) {
+
+		/**
+		 * Constructs a new record for holding information about a type.
+		 * 
+		 * @param elementType the element type of a type, may not be null
+		 * @param dim         the dimension of array part of a type (may be 0 if not an
+		 *                    array). May not be negative.
+		 * @throws NullPointerException if elementType is null
+		 * @throws IllegalArgumentException if element type is blank or the dimension is negative
+		 */
+		public DecomposedTypeInfo {
+			Objects.requireNonNull(elementType);
+			
+			if (elementType.isBlank()) {
+				throw new IllegalArgumentException("Element type may not be blank!");
+			}
+
+			if (dim < 0) {
+				throw new IllegalArgumentException("Array dimension needs to be at least 0 (for non-array types)!");
+			}
+		}
+	}
+
+	/**
+	 * Decomposes the given class name into {@link DecomposedTypeInfo}, providing
+	 * information about the element type and the array dimension.
+	 * 
+	 * @param className the class name, may not be null
+	 * @return the decomposed type info
+	 */
+	private static DecomposedTypeInfo decomposeTypeInfo(String className) {
+		int startArrayInfo = className.indexOf('[');
+		if (startArrayInfo == -1) {
+			return new DecomposedTypeInfo(className, 0);
+		}
+		
+		String arrayPart = className.substring(startArrayInfo);
+		int dim = 0;
+		for (int i = 0; i < arrayPart.length(); i++) {
+			if (arrayPart.charAt(i) == '[') {
+				dim++;
+			}
+		}
+		
+		return new DecomposedTypeInfo(className.substring(0, startArrayInfo), dim);
+	}
+
+	/**
+	 * Parses a non-primitive type to its corresponding class.
+	 * 
+	 * @param className the name of the class. May not be null. Classes in package
+	 *                  "java.lang" do not need the class name to be fully
+	 *                  qualified.
+	 * @return the class corresponding to the given type
+	 */
+	private static Class<?> parseNonprimitiveType(String className) {
+		String fqn = className.contains(".") ? className : "java.lang.".concat(className);
+        try {
+            return Class.forName(fqn);
+        } catch (ClassNotFoundException ex) {
+            throw new IllegalArgumentException("Class not found: " + fqn);
+        }
 	}
 }
