@@ -150,7 +150,6 @@ public final class Reflections {
 								  .map(o -> o.getClass().getSimpleName())
 								  .collect(Collectors.toList())));
 		}
-		matchingConstructors.stream().unordered().findAny();
 		
 		return switch (type) {
 			case MOST_SPECIFIC -> matchingConstructors.get(0);
@@ -332,7 +331,7 @@ public final class Reflections {
 		// we do not check the last parameter here as it may be a vararg
 		for (int i = 0; i < params.length - 1; i++) {
 			if (i >= internalArgs.length) {
-				continue; // this jump is not redundant, as we otherwise check arguments that we do not want to check
+				// this check is not redundant, as we otherwise check arguments that we do not want to check
 			} else if (Types.boxedClass(params[i].getType()) != internalArgs[i].getClass()) {
 				return false;
 			}
