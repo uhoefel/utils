@@ -61,8 +61,8 @@ public final class Types {
      * <p>
      * <code>arrayType(double.class, 1)</code> yields
      * <code>double[].class</code><br>
-     * <code>arrayType(String[].class, 1)</code> yields
-     * <code>String[][].class</code>
+     * <code>arrayType(String[].class, 2)</code> yields
+     * <code>String[][][].class</code>
      * <p>
      * 
      * @param elementType the element type of the array class to be created
@@ -176,66 +176,86 @@ public final class Types {
     }
 
     /**
-     * Checks whether the arg can be narrowed to the paramClass.
+     * Checks whether the {@code arg} can be (primitively, or with their wrapper
+     * classes) narrowed down to {@code clazz}. This check does check whether
+     * {@code arg} is within range of the class to narrow down to (e.g. whether a
+     * {@code double} is within range of {@code float}), <em>which is a deviation of
+     * the behavior specified in the Java language specification</em> (which also
+     * allows values outside the narrowed range, but may put them at another value,
+     * e.g. infinity). Even if this check returns true the corresponding narrowing
+     * conversion may still lead to a loss in precision.
      * 
-     * @param paramClass the class to check if arg can be narrowed to
-     * @param arg        the argument
-     * @return true if arg can be narrowed to paramClass
+     * @param clazz the class to check if {@code arg} can be narrowed to
+     * @param arg   the argument
+     * @return true if {@code arg} can be narrowed to {@code clazz}
      */
-    public static final boolean canBeNarrowed(Class<?> paramClass, Object arg) {
-        Class<?> boxedClass = Types.boxedClass(paramClass);
-        return     (arg instanceof Short s1     && boxedClass == Byte.class      && s1 >= Byte.MIN_VALUE      && s1 <= Byte.MAX_VALUE)
-                || (arg instanceof Short s2     && boxedClass == Character.class && s2 >= Character.MIN_VALUE && s2 <= Character.MAX_VALUE)
-                || (arg instanceof Character c1 && boxedClass == Byte.class      && c1 >= Byte.MIN_VALUE      && c1 <= Byte.MAX_VALUE)
-                || (arg instanceof Character c2 && boxedClass == Short.class     && c2 >= Short.MIN_VALUE     && c2 <= Short.MAX_VALUE)
-                || (arg instanceof Integer i1   && boxedClass == Byte.class      && i1 >= Byte.MIN_VALUE      && i1 <= Byte.MAX_VALUE)
-                || (arg instanceof Integer i2   && boxedClass == Short.class     && i2 >= Short.MIN_VALUE     && i2 <= Short.MAX_VALUE)
-                || (arg instanceof Integer i3   && boxedClass == Character.class && i3 >= Character.MIN_VALUE && i3 <= Character.MAX_VALUE)
-                || (arg instanceof Long l1      && boxedClass == Byte.class      && l1 >= Byte.MIN_VALUE      && l1 <= Byte.MAX_VALUE)
-                || (arg instanceof Long l2      && boxedClass == Short.class     && l2 >= Short.MIN_VALUE     && l2 <= Short.MAX_VALUE)
-                || (arg instanceof Long l3      && boxedClass == Character.class && l3 >= Character.MIN_VALUE && l3 <= Character.MAX_VALUE)
-                || (arg instanceof Long l4      && boxedClass == Integer.class   && l4 >= Integer.MIN_VALUE   && l4 <= Integer.MAX_VALUE)
-                || (arg instanceof Float f1     && boxedClass == Byte.class      && f1 >= Byte.MIN_VALUE      && f1 <= Byte.MAX_VALUE)
-                || (arg instanceof Float f2     && boxedClass == Short.class     && f2 >= Short.MIN_VALUE     && f2 <= Short.MAX_VALUE)
-                || (arg instanceof Float f3     && boxedClass == Character.class && f3 >= Character.MIN_VALUE && f3 <= Character.MAX_VALUE)
-                || (arg instanceof Float f4     && boxedClass == Integer.class   && f4 >= Integer.MIN_VALUE   && f4 <= Integer.MAX_VALUE)
-                || (arg instanceof Float f5     && boxedClass == Long.class      && f5 >= Long.MIN_VALUE      && f5 <= Long.MAX_VALUE)
-                || (arg instanceof Double d1    && boxedClass == Byte.class      && d1 >= Byte.MIN_VALUE      && d1 <= Byte.MAX_VALUE)
-                || (arg instanceof Double d2    && boxedClass == Short.class     && d2 >= Short.MIN_VALUE     && d2 <= Short.MAX_VALUE)
-                || (arg instanceof Double d3    && boxedClass == Character.class && d3 >= Character.MIN_VALUE && d3 <= Character.MAX_VALUE)
-                || (arg instanceof Double d4    && boxedClass == Integer.class   && d4 >= Integer.MIN_VALUE   && d4 <= Integer.MAX_VALUE)
-                || (arg instanceof Double d5    && boxedClass == Long.class      && d5 >= Long.MIN_VALUE      && d5 <= Long.MAX_VALUE)
-                || (arg instanceof Double d6    && boxedClass == Float.class     && d6 >= Float.MIN_VALUE     && d6 <= Float.MAX_VALUE);
+    public static final boolean canBeNarrowed(Class<?> clazz, Object arg) {
+        if (clazz == null || arg == null) {
+            return false;
+        }
+        
+        Class<?> boxedClass = Types.boxedClass(clazz);
+        return     (arg instanceof Short s     && boxedClass == Byte.class      && s >= Byte.MIN_VALUE      && s <= Byte.MAX_VALUE)
+                || (arg instanceof Short s     && boxedClass == Character.class && s >= Character.MIN_VALUE && s <= Character.MAX_VALUE)
+                || (arg instanceof Character c && boxedClass == Byte.class      && c >= Byte.MIN_VALUE      && c <= Byte.MAX_VALUE)
+                || (arg instanceof Character c && boxedClass == Short.class     && c >= Short.MIN_VALUE     && c <= Short.MAX_VALUE)
+                || (arg instanceof Integer i   && boxedClass == Byte.class      && i >= Byte.MIN_VALUE      && i <= Byte.MAX_VALUE)
+                || (arg instanceof Integer i   && boxedClass == Short.class     && i >= Short.MIN_VALUE     && i <= Short.MAX_VALUE)
+                || (arg instanceof Integer i   && boxedClass == Character.class && i >= Character.MIN_VALUE && i <= Character.MAX_VALUE)
+                || (arg instanceof Long l      && boxedClass == Byte.class      && l >= Byte.MIN_VALUE      && l <= Byte.MAX_VALUE)
+                || (arg instanceof Long l      && boxedClass == Short.class     && l >= Short.MIN_VALUE     && l <= Short.MAX_VALUE)
+                || (arg instanceof Long l      && boxedClass == Character.class && l >= Character.MIN_VALUE && l <= Character.MAX_VALUE)
+                || (arg instanceof Long l      && boxedClass == Integer.class   && l >= Integer.MIN_VALUE   && l <= Integer.MAX_VALUE)
+                || (arg instanceof Float f     && boxedClass == Byte.class      && f >= Byte.MIN_VALUE      && f <= Byte.MAX_VALUE)
+                || (arg instanceof Float f     && boxedClass == Short.class     && f >= Short.MIN_VALUE     && f <= Short.MAX_VALUE)
+                || (arg instanceof Float f     && boxedClass == Character.class && f >= Character.MIN_VALUE && f <= Character.MAX_VALUE)
+                || (arg instanceof Float f     && boxedClass == Integer.class   && f >= Integer.MIN_VALUE   && f <= Integer.MAX_VALUE)
+                || (arg instanceof Float f     && boxedClass == Long.class      && f >= Long.MIN_VALUE      && f <= Long.MAX_VALUE)
+                || (arg instanceof Double d    && boxedClass == Byte.class      && d >= Byte.MIN_VALUE      && d <= Byte.MAX_VALUE)
+                || (arg instanceof Double d    && boxedClass == Short.class     && d >= Short.MIN_VALUE     && d <= Short.MAX_VALUE)
+                || (arg instanceof Double d    && boxedClass == Character.class && d >= Character.MIN_VALUE && d <= Character.MAX_VALUE)
+                || (arg instanceof Double d    && boxedClass == Integer.class   && d >= Integer.MIN_VALUE   && d <= Integer.MAX_VALUE)
+                || (arg instanceof Double d    && boxedClass == Long.class      && d >= Long.MIN_VALUE      && d <= Long.MAX_VALUE)
+                || (arg instanceof Double d    && boxedClass == Float.class     && d >= Float.MIN_VALUE     && d <= Float.MAX_VALUE);
     }
 
     /**
-     * Checks whether arg can be widened to the paramClass.
+     * Checks whether {@code arg} can be widened to {@code clazz}, including
+     * reference widening operations.
      * 
-     * @param paramClass the class to check if arg can be widened to
-     * @param arg        the argument
-     * @return true if arg can be widened to paramClass
+     * @param clazz the class to check if {@code arg} can be widened to
+     * @param arg   the argument
+     * @return true if {@code arg} can be widened to {@code clazz}
      */
-    public static final boolean canBeWidened(Class<?> paramClass, Object arg) {
-        Class<?> boxedClass = Types.boxedClass(paramClass);
+    public static final boolean canBeWidened(Class<?> clazz, Object arg) {
+        if (clazz == null) {
+            return false;
+        }
+
+        Class<?> boxedClass = Types.boxedClass(clazz);
         return     (arg instanceof Float     &&  boxedClass == Double.class) 
                 || (arg instanceof Long      && (boxedClass == Double.class || boxedClass == Float.class))
                 || (arg instanceof Integer   && (boxedClass == Double.class || boxedClass == Float.class || boxedClass == Long.class))
                 || (arg instanceof Character && (boxedClass == Double.class || boxedClass == Float.class || boxedClass == Long.class || boxedClass == Integer.class))
                 || (arg instanceof Short     && (boxedClass == Double.class || boxedClass == Float.class || boxedClass == Long.class || boxedClass == Integer.class))
-                || (arg instanceof Byte      && (boxedClass == Double.class || boxedClass == Float.class || boxedClass == Long.class || boxedClass == Integer.class || boxedClass == Short.class));
+                || (arg instanceof Byte      && (boxedClass == Double.class || boxedClass == Float.class || boxedClass == Long.class || boxedClass == Integer.class || boxedClass == Short.class))
+                || (arg != null && clazz.isAssignableFrom(arg.getClass()))
+                || (arg == null && !clazz.isPrimitive());
     }
 
     /**
-     * Checks whether the two classes are compatible. This does not do
+     * Checks whether the two classes are compatible. This does do
      * narrowing/widening checks!
      * 
-     * @param clazz1 the first class
-     * @param clazz2 the second class
+     * @param clazz the class
+     * @param arg   the argument to check if it could be used (incl. autoboxing,
+     *              auto-widening and -narrowing conversions) for a parameter of
+     *              class {@code clazz}
      * @return true if the given classes are compatible
      */
-    public static final boolean isCompatible(Class<?> clazz1, Class<?> clazz2) {
-        return clazz1 == clazz2 || (clazz1 != null && clazz2 != null
-                && (clazz1.isAssignableFrom(clazz2) || boxedClass(clazz1).isAssignableFrom(clazz2)));
+    public static final boolean isCompatible(Class<?> clazz, Object arg) {
+        return (arg != null && boxedClass(clazz) == boxedClass(arg.getClass())) || canBeWidened(clazz, arg)
+                || canBeNarrowed(clazz, arg);
     }
 
     /**
