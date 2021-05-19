@@ -1,6 +1,8 @@
 package eu.hoefel.utils;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
@@ -1099,19 +1101,20 @@ public final class Maths {
 		return ret;
 	}
 
-	/**
-	 * Gets a deep copy for the given primitive array.
-	 * 
-	 * @param <T> the type of the primitive array
-	 * @param array the array to copy
-	 * @return a deep-copy of the primitive array
-	 */
+    /**
+     * Gets a deep copy for the given primitive array (their wrapper classes,
+     * {@link BigInteger} and {@link BigDecimal} are also deepcopied).
+     * 
+     * @param <T>   the type of the primitive array
+     * @param array the array to copy
+     * @return a deep-copy of the primitive array
+     */
 	@SuppressWarnings("unchecked")
 	public static final <T> T deepCopyPrimitiveArray(T array) {
 		Objects.requireNonNull(array);
 
 		Class<?> c = Types.elementType(array.getClass());
-		if (c.isPrimitive()) {
+		if (c.isPrimitive() || c == BigInteger.class || c == BigDecimal.class) {
 			int dim = Types.dimension(array.getClass());
 			if (dim == 1) {
 				if (array instanceof double[] d) {
@@ -1128,10 +1131,15 @@ public final class Maths {
 					return (T) s.clone();
 				} else if (array instanceof char[] ch) {
 					return (T) ch.clone();
-				} else {
-					// has to be byte[]
-					return (T) ((byte[]) array).clone();
-				}
+				} else if (array instanceof byte[] by) {
+					return (T) by.clone();
+				} else if (array instanceof BigInteger[] bi) {
+				    return (T) bi.clone();
+				} else if (array instanceof BigDecimal[] bd) {
+                    return (T) bd.clone();
+                }
+				
+				throw new AssertionError("Unhandled primitive type");
 			} else {
 				int len = Array.getLength(array);
 				T ret = (T) Array.newInstance(array.getClass().getComponentType(), len);
@@ -1140,9 +1148,14 @@ public final class Maths {
 				}
 				return ret;
 			}
-		} else {
-			throw new IllegalArgumentException("%s is not a primitive array".formatted(array.getClass().getSimpleName()));
+		} else if (c != Types.unboxedClass(c)) {
+		    // this is not the most performant approach, but should work
+		    return Types.box(deepCopyPrimitiveArray(Types.unbox(array)));
 		}
+
+        throw new IllegalArgumentException(
+                "%s is not a primitive array (or of a wrapper class of a primitive or BigInteger/BigDecimal)"
+                        .formatted(array.getClass().getSimpleName()));
 	}
 
 	/**
