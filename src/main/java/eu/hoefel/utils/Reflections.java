@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -148,7 +147,7 @@ public final class Reflections {
 							clazz.getSimpleName(),
 							Stream.of(args)
 								  .map(o -> o.getClass().getSimpleName())
-								  .collect(Collectors.toList())));
+								  .toList()));
 		}
 		
 		return switch (type) {
@@ -179,7 +178,7 @@ public final class Reflections {
 		return Stream.of(constructors)
 				.filter(c -> hasCompatibleParameterSignature(c, internalArgs))
 				.sorted((e1, e2) -> compareParameterDistance(e1, e2, args))
-				.collect(Collectors.toList());
+				.toList();
 	}
 	
 	/**
