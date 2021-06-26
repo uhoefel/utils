@@ -244,11 +244,11 @@ public final class Reflections {
 				 // if arg is non-null and the types dont match -> incompatible
 				// note the small but relevant difference to incompatibleTypesWithoutWidening
 				// Types.isCompatible vs. Reflections.isCompatible
-				|| (arg != null && !p.getType().equals(arg.getClass()) && !isCompatible(p, arg));
+				|| (arg != null && !Types.boxedClass(p.getType()).equals(arg.getClass()) && !isCompatible(p, arg));
 	}
 
 	/**
-	 * Checks whether the parameter is compatible (including narrowing and widening
+	 * Checks whether the parameter is compatible (including widening
 	 * conversions) to the given argument.
 	 * 
 	 * @param parameter the parameter
@@ -257,17 +257,12 @@ public final class Reflections {
 	 */
 	private static final boolean isCompatible(Parameter parameter, Object arg) {
 		Class<?> paramClass = parameter.getType();
-		Class<?> argClass = arg.getClass();
 		
 		// check widening conversions
 		boolean canBeWidened = Types.canBeWidened(paramClass, arg);
 		if (canBeWidened) return true;
 		
-		// check narrowing conversions
-		boolean canBeNarrowed = Types.canBeNarrowed(paramClass, arg);
-		if (canBeNarrowed) return true;
-		
-		return Types.isCompatible(paramClass, argClass);
+		return Types.isCompatible(paramClass, arg);
 	}
 
 	/**

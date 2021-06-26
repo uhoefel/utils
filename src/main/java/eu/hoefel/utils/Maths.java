@@ -3,6 +3,7 @@ package eu.hoefel.utils;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
@@ -1554,5 +1555,131 @@ public final class Maths {
 			if (Double.isNaN(ret)) break;
 		}
 		return ret;
+	}
+
+    /**
+     * Gets a textual representation of a 1D array, in which a long array is
+     * truncated, such that the chance to have a human readable array is slightly
+     * increased.
+     * 
+     * @param array the array to represent. If the array is null, "null" is
+     *              returned.
+     * @return the String representing the array, never null
+     */
+    public static final String truncatedToString(double[] array) {
+        StringBuilder sb = new StringBuilder();
+        if (array == null) {
+            sb.append("null");
+        } else if (array.length <= 11) {
+            sb.append(Arrays.toString(array));
+        } else {
+            sb.append("[");
+            int numToShowFromStart = 5;
+            for (int i = 0; i < numToShowFromStart; i++) {
+                sb.append(array[i]);
+                sb.append(", ");
+            }
+            sb.append("..., ");
+            int numToShowAtEnd = 5;
+            for (int i = array.length - numToShowAtEnd; i < array.length; i++) {
+                sb.append(array[i]);
+                if (i != array.length - 1) sb.append(", ");
+            }
+            sb.append("]");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Gets a textual representation of a 2D array, in which long arrays are
+     * truncated, such that the chance to have human readable arrays is slightly
+     * increased.
+     * 
+     * @param array the array to represent. If the array is null, "null" is
+     *              returned.
+     * @return the String representing the array, never null
+     */
+	public static final String truncatedToString(double[][] array) {
+	    int numToShowFromStartOuter = 15;
+        int numToShowAtEndOuter = 15;
+        int numToShowFromStartInner = 5;
+        int numToShowAtEndInner = 5;
+
+        // That code is not particularly nice, maybe good to refactor at some point
+        
+	    StringBuilder sb = new StringBuilder();
+        if (array == null) {
+            sb.append("null");
+        } else if (array.length <= numToShowFromStartOuter + numToShowAtEndOuter) {
+            sb.append("[");
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] == null) {
+                    sb.append("null");
+                } else if (array[i].length < numToShowFromStartInner + numToShowAtEndInner) {
+                    sb.append(Arrays.toString(array[i]));
+                } else {
+                    sb.append("[");
+                    for (int j = 0; j < numToShowFromStartInner; j++) {
+                        sb.append(array[i][j]);
+                        sb.append(", ");
+                    }
+                    sb.append("..., ");
+                    for (int j = array[i].length - numToShowAtEndInner; j < array[i].length; j++) {
+                        sb.append(array[i][j]);
+                        if (j != array[i].length - 1) sb.append(", ");
+                    }
+                    sb.append("]");
+                }
+                if (i != array.length - 1) sb.append(", ");
+            }
+            sb.append("]");
+        } else {
+            sb.append("[");
+            for (int i = 0; i < numToShowFromStartOuter; i++) {
+                if (array[i] == null) {
+                    sb.append("null");
+                } else if (array[i].length < numToShowFromStartInner + numToShowAtEndInner) {
+                    sb.append(Arrays.toString(array[i]));
+                } else {
+                    sb.append("[");
+                    for (int j = 0; j < numToShowFromStartInner; j++) {
+                        sb.append(array[i][j]);
+                        sb.append(", ");
+                    }
+                    sb.append("..., ");
+                    for (int j = array[i].length - numToShowAtEndInner; j < array[i].length; j++) {
+                        sb.append(array[i][j]);
+                        if (j != array[i].length - 1) sb.append(", ");
+                    }
+                    sb.append("]");
+                }
+                sb.append(", ");
+            }
+            sb.append("..., ");
+                              
+            for (int i = array.length - 1 - numToShowAtEndOuter; i < array.length; i++) {
+                if (array[i] == null) {
+                    sb.append("null");
+                } else if (array[i].length < numToShowFromStartInner + numToShowAtEndInner) {
+                    sb.append(Arrays.toString(array[i]));
+                } else {
+                    sb.append("[");
+                    for (int j = 0; j < numToShowFromStartInner; j++) {
+                        sb.append(array[i][j]);
+                        sb.append(", ");
+                    }
+                    sb.append("..., ");
+                    for (int j = array[i].length - numToShowAtEndInner; j < array[i].length; j++) {
+                        sb.append(array[i][j]);
+                        if (j != array[i].length - 1) sb.append(", ");
+                    }
+                    sb.append("]");
+                }
+                if (i != array[i].length - 1) sb.append(", ");
+            }
+            sb.append("]");
+        }
+
+        return sb.toString();
 	}
 }

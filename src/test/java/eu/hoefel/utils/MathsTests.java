@@ -141,4 +141,24 @@ final class MathsTests {
 		double[][][] b = {{{1,2,3,4},{6,7,8,9}}};
 		assertArrayEquals(new double[][][] {{{1,2,3,4}},{{6,7,8,9}}}, Maths.transpose(b));
 	}
+
+	@DisplayName("Testing array to String")
+	@Test
+	void testArrayToString() {
+	    double[] a = {1,2,3,4,5,6,7,8,9};
+        assertEquals("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]", Maths.truncatedToString(a));
+        
+        double[] b = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22};
+        assertEquals(
+                "[1.0, 2.0, 3.0, 4.0, 5.0, ..., 18.0, 19.0, 20.0, 21.0, 22.0]",
+                Maths.truncatedToString(b));
+	    
+	    double[][] c = {{1,2},{3,4,5},{6,7,8,9}};
+        assertEquals("[[1.0, 2.0], [3.0, 4.0, 5.0], [6.0, 7.0, 8.0, 9.0]]", Maths.truncatedToString(c));
+	    
+	    double[][] d = {{1,2},{3,4,5},{6,7,8,9,10,11,12,13,14,15,16,17,18}};
+        assertEquals(
+                "[[1.0, 2.0], [3.0, 4.0, 5.0], [6.0, 7.0, 8.0, 9.0, 10.0, ..., 14.0, 15.0, 16.0, 17.0, 18.0]]",
+                Maths.truncatedToString(d));
+	}
 }
