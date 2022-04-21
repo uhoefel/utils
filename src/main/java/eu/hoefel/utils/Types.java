@@ -193,7 +193,7 @@ public final class Types {
         if (clazz == null || arg == null) {
             return false;
         }
-        
+
         Class<?> boxedClass = Types.boxedClass(clazz);
         return     (arg instanceof Short s1     && boxedClass == Byte.class      && s1 >= Byte.MIN_VALUE      && s1 <= Byte.MAX_VALUE)
                 || (arg instanceof Short s2     && boxedClass == Character.class && s2 >= Character.MIN_VALUE && s2 <= Character.MAX_VALUE)

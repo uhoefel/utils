@@ -27,10 +27,10 @@ The artifact can be found at maven central:
 <dependency>
     <groupId>eu.hoefel</groupId>
     <artifactId>utils</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
 Requirements
 ============
-Utils is designed to work with Java 16+.
+Utils is designed to work with Java 17+.
