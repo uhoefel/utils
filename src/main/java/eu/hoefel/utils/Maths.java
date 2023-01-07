@@ -329,6 +329,8 @@ public final class Maths {
 
     /**
      * Calculates the inverse cotangent of {@code x}.
+     * <p>
+     * Note that this follows the convention having a discontinuity at 0.
      * 
      * @param x the argument
      * @return the inverse cotangent
